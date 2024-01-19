@@ -6,3 +6,6 @@
 	path = lua54/src
 	url = https://github.com/lua/lua
 	branch = v5.4.0
+[submodule "vcpkg"]
+	path = vcpkg
+	url = https://github.com/microsoft/vcpkg

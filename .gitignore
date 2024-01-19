@@ -34,5 +34,5 @@
 # CMake
 out/
 
-# Visual Studio
+# Visual Studio and vcpkg
 .vs/
