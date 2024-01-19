@@ -103,3 +103,10 @@ Before you begin building the application, you must have the following prerequis
 * [Visual Studio 2022 (C++ Desktop Development)](https://visualstudio.microsoft.com/downloads/)
 * [vcpkg](https://vcpkg.io/en/getting-started.html)
 
+# Building
+
+```
+git clone https://github.com/nusov/LuaOverMQ
+cd LuaOverMQ
+cmake --build --preset ninja-vcpkg-release --config Release
+```
