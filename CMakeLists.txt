@@ -23,13 +23,13 @@ find_package(msgpack-cxx CONFIG REQUIRED)
 
 # Add source to this project's executable.
 add_library (LuaOverMQ53 SHARED ${SOURCE_LIB})
-target_include_directories(LuaOverMQ53 PRIVATE lua54)
+target_include_directories(LuaOverMQ53 PRIVATE lua54/src)
 target_link_libraries(LuaOverMQ53 PRIVATE lua54)
 target_link_libraries(LuaOverMQ53 PRIVATE cppzmq cppzmq-static)
 target_link_libraries(LuaOverMQ53 PRIVATE msgpack-cxx)
 
 add_library (LuaOverMQ54 SHARED ${SOURCE_LIB})
-target_include_directories(LuaOverMQ54 PRIVATE lua54)
+target_include_directories(LuaOverMQ54 PRIVATE lua54/src)
 target_link_libraries(LuaOverMQ54 PRIVATE lua54)
 target_link_libraries(LuaOverMQ54 PRIVATE cppzmq cppzmq-static)
 target_link_libraries(LuaOverMQ54 PRIVATE msgpack-cxx)

@@ -23,6 +23,6 @@
 #define LUA_BUILD_AS_DLL
 
 extern "C" {
-#include <src/lauxlib.h>
-#include <src/lualib.h>
+#include <lauxlib.h>
+#include <lualib.h>
 }
