@@ -10,9 +10,7 @@ if (POLICY CMP0141)
 endif()
 
 # Change linking
-if (MSVC)
-  set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /MT")
-endif()
+set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /MT")
 
 project ("LuaOverMQ")
 

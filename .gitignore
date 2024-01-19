@@ -32,6 +32,7 @@
 *.app
 
 # CMake
+builds/
 out/
 
 # Visual Studio and vcpkg
