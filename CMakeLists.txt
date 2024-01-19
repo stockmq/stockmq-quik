@@ -16,7 +16,7 @@ add_subdirectory("lua54")
 
 set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /MT")
 
-set(SOURCE_LIB "LuaOverMQ.cpp" "LuaOverMQ.h")
+set(SOURCE_LIB "src/LuaOverMQ.cpp" "src/LuaOverMQ.h")
 
 find_package(cppzmq CONFIG REQUIRED)
 find_package(msgpack-cxx CONFIG REQUIRED)
