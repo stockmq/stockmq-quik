@@ -41,6 +41,14 @@ set(SOURCE_LIB
 add_library (lua53 SHARED ${SOURCE_LIB})
 target_compile_definitions(lua53 PRIVATE LUA_BUILD_AS_DLL)
 
+add_library (LuaOverMQ53 SHARED "../src/LuaOverMQ.cpp" "../src/LuaOverMQ.h")
+set_target_properties(LuaOverMQ53 PROPERTIES OUTPUT_NAME "LuaOverMQ")
+target_include_directories(LuaOverMQ53 PRIVATE src)
+target_link_libraries(LuaOverMQ53 PRIVATE lua53)
+target_link_libraries(LuaOverMQ53 PRIVATE cppzmq cppzmq-static)
+target_link_libraries(LuaOverMQ53 PRIVATE msgpack-cxx)
+
 if (CMAKE_VERSION VERSION_GREATER 3.12)
   set_property(TARGET lua53 PROPERTY CXX_STANDARD 20)
+  set_property(TARGET LuaOverMQ53 PROPERTY CXX_STANDARD 20)
 endif()
