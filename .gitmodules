@@ -1,0 +1,8 @@
+[submodule "lua53/src"]
+	path = lua53/src
+	url = https://github.com/lua/lua
+	branch = v5.3
+[submodule "lua54/src"]
+	path = lua54/src
+	url = https://github.com/lua/lua
+	branch = v5.4.0
