@@ -1,4 +1,4 @@
-﻿// LuaOverMQ.h : Header file for your target.
+﻿// StockMQ.h : Header file for your target.
 
 #pragma once
 

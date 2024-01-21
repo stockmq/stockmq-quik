@@ -62,5 +62,5 @@ jobs:
         with:
           name: my-artifact
           path: |
-            builds/ninja-multi-vcpkg/**/Release/LuaOverMQ.dll
+            builds/ninja-multi-vcpkg/**/Release/StockMQ.dll
 

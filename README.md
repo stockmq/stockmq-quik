@@ -1,6 +1,6 @@
-# LuaOverMQ
+# StockMQ
 
-LuaOverMQ is a high-performance RPC library that uses MsgPack and ZeroMQ designed to use with trading terminals.
+StockMQ is a high-performance RPC library that uses MsgPack and ZeroMQ designed to use with trading terminals.
 
 On AMD Ryzen 5600x it performs 10000 RPS in average.
 
@@ -10,7 +10,7 @@ package.cpath = package.cpath .. ';'
     .. getScriptPath() .. "\\x64\\Release\\?.dll"
 
 -- Load C++ extension
-require("LuaOverMQ")
+require("StockMQ")
 
 -- Global constants
 STOCKMQ_ZMQ_REP = 4
@@ -106,7 +106,5 @@ Before you begin building the application, you must have the following prerequis
 # Building
 
 ```
-git clone https://github.com/nusov/LuaOverMQ
-cd LuaOverMQ
 cmake --build --preset ninja-vcpkg-release --config Release
 ```

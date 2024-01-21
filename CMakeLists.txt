@@ -1,4 +1,4 @@
-﻿# CMakeList.txt : CMake project for LuaOverMQ
+﻿# CMakeList.txt : CMake project for StockMQ
 cmake_minimum_required (VERSION 3.12)
 
 # Enable Hot Reload for MSVC compilers if supported.
@@ -11,7 +11,7 @@ endif()
 set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /MT")
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /MTd")
 
-project ("LuaOverMQ")
+project ("StockMQ")
 
 find_package(cppzmq CONFIG REQUIRED)
 find_package(msgpack-cxx CONFIG REQUIRED)
