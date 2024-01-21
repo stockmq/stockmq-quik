@@ -40,18 +40,18 @@ add_library (lua53 SHARED ${LUA_SOURCES})
 target_compile_definitions(lua53 PRIVATE LUA_BUILD_AS_DLL)
 
 set(LIB_SOURCES
-  ../src/LuaOverMQ.cpp
-  ../src/LuaOverMQ.h
+  ../src/StockMQ.cpp
+  ../src/StockMQ.h
 )
 
-add_library (LuaOverMQ53 SHARED ${LIB_SOURCES})
-set_target_properties(LuaOverMQ53 PROPERTIES OUTPUT_NAME "LuaOverMQ")
-target_include_directories(LuaOverMQ53 PRIVATE src)
-target_link_libraries(LuaOverMQ53 PRIVATE lua53)
-target_link_libraries(LuaOverMQ53 PRIVATE cppzmq cppzmq-static)
-target_link_libraries(LuaOverMQ53 PRIVATE msgpack-cxx)
+add_library (StockMQ53 SHARED ${LIB_SOURCES})
+set_target_properties(StockMQ53 PROPERTIES OUTPUT_NAME "StockMQ")
+target_include_directories(StockMQ53 PRIVATE src)
+target_link_libraries(StockMQ53 PRIVATE lua53)
+target_link_libraries(StockMQ53 PRIVATE cppzmq cppzmq-static)
+target_link_libraries(StockMQ53 PRIVATE msgpack-cxx)
 
 if (CMAKE_VERSION VERSION_GREATER 3.12)
-  set_property(TARGET LuaOverMQ53 PROPERTY CXX_STANDARD 20)
+  set_property(TARGET StockMQ53 PROPERTY CXX_STANDARD 20)
 endif()
 

@@ -1,5 +1,5 @@
 /*
- * This file is part of the LuaOverMQ distribution (https://github.com/StockMQ).
+ * This file is part of the StockMQ distribution (https://github.com/StockMQ).
  * Copyright (c) 2022-2024 Alexander Nusov
  *
  * This program is free software: you can redistribute it and/or modify
@@ -14,10 +14,10 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-#include "LuaOverMQ.h"
+#include "StockMQ.h"
 
-constexpr auto METATABLE = "luaL_LuaOverMQ";
-constexpr auto LUAOVERMQ = "LuaOverMQ";
+constexpr auto METATABLE = "luaL_StockMQ";
+constexpr auto STOCKMQ = "StockMQ";
 constexpr auto STATUS_ERROR = "ERROR";
 constexpr auto STATUS_OK = "OK";
 
@@ -144,15 +144,15 @@ void stack_pack(msgpack::packer<msgpack::sbuffer>& pk, lua_State* L, int i) {
 	}
 }
 
-// LuaOverMQ
-struct LuaOverMQ {
+// StockMQ
+struct StockMQ {
 	zmq::socket_t* zmq_skt;
 	zmq::context_t* zmq_ctx;
 	int zmq_err;
 };
 
-inline LuaOverMQ* luaovermq_check(lua_State* L, int n) {
-	return *(LuaOverMQ**)luaL_checkudata(L, n, METATABLE);
+inline StockMQ* stockmq_check(lua_State* L, int n) {
+	return *(StockMQ**)luaL_checkudata(L, n, METATABLE);
 }
 
 inline void send_multipart(zmq::socket_t* zmq_skt, const std::string& header, const msgpack::sbuffer& buffer) {
@@ -160,11 +160,11 @@ inline void send_multipart(zmq::socket_t* zmq_skt, const std::string& header, co
 	zmq_skt->send(zmq::message_t(buffer.data(), buffer.size()), zmq::send_flags::none);
 }
 
-static int luaovermq_bind(lua_State* L) {
+static int stockmq_bind(lua_State* L) {
 	auto bind_address = luaL_checkstring(L, 1);
 	auto skt_type = static_cast<int>(luaL_checkinteger(L, 2));
-	auto udata = (LuaOverMQ**)lua_newuserdata(L, sizeof(LuaOverMQ*));
-	*udata = new LuaOverMQ();
+	auto udata = (StockMQ**)lua_newuserdata(L, sizeof(StockMQ*));
+	*udata = new StockMQ();
 
 	(*udata)->zmq_ctx = new zmq::context_t(1);
 	(*udata)->zmq_skt = new zmq::socket_t(*(*udata)->zmq_ctx, skt_type);
@@ -175,8 +175,8 @@ static int luaovermq_bind(lua_State* L) {
 	return 1;
 }
 
-static int luaovermq_process(lua_State* L) {
-	auto s = luaovermq_check(L, 1);
+static int stockmq_process(lua_State* L) {
+	auto s = stockmq_check(L, 1);
 
 	if (s->zmq_skt) {
 		s->zmq_err = 0;
@@ -240,6 +240,7 @@ static int luaovermq_process(lua_State* L) {
 					status = STATUS_ERROR;
 					packer.pack(std::format("{}:{}: input should be array with first argument as string", __FILE__, __LINE__));
 				}
+
 				send_multipart(s->zmq_skt, status, buffer);
 			}
 		}
@@ -251,8 +252,8 @@ static int luaovermq_process(lua_State* L) {
 	return 1;
 }
 
-static int luaovermq_send(lua_State* L) {
-	auto s = luaovermq_check(L, 1);
+static int stockmq_send(lua_State* L) {
+	auto s = stockmq_check(L, 1);
 	auto identity = luaL_checkstring(L, 2);
 	luaL_checkany(L, 3);
 
@@ -274,20 +275,20 @@ static int luaovermq_send(lua_State* L) {
 	return 1;
 }
 
-static int luaovermq_errno(lua_State* L) {
-	auto s = luaovermq_check(L, 1);
+static int stockmq_errno(lua_State* L) {
+	auto s = stockmq_check(L, 1);
 	lua_pushinteger(L, static_cast<lua_Integer>(s->zmq_err));
 	return 1;
 }
 
-static int luaovermq_time(lua_State* L) {
+static int stockmq_time(lua_State* L) {
 	auto ts = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
 	lua_pushnumber(L, static_cast<lua_Number>(ts / 1000000.0));
 	return 1;
 }
 
-static int luaovermq_destructor(lua_State* L) {
-	auto s = luaovermq_check(L, 1);
+static int stockmq_destructor(lua_State* L) {
+	auto s = stockmq_check(L, 1);
 	if (s->zmq_skt) {
 		s->zmq_skt->close();
 		delete s->zmq_skt;
@@ -301,21 +302,21 @@ static int luaovermq_destructor(lua_State* L) {
 }
 
 static luaL_Reg funcs[] = {
-	{ "bind", luaovermq_bind },
-	{ "send", luaovermq_send },
-	{ "process", luaovermq_process },
-	{ "errno", luaovermq_errno },
-	{ "time", luaovermq_time },
-	{ "__gc", luaovermq_destructor },
+	{ "bind", stockmq_bind },
+	{ "send", stockmq_send },
+	{ "process", stockmq_process },
+	{ "errno", stockmq_errno },
+	{ "time", stockmq_time },
+	{ "__gc", stockmq_destructor },
 	{ NULL, NULL }
 };
 
-extern "C" LUALIB_API int luaopen_LuaOverMQ(lua_State * L) {
+extern "C" LUALIB_API int luaopen_StockMQ(lua_State * L) {
 	luaL_checkversion(L);
 	luaL_newmetatable(L, METATABLE);
 	luaL_setfuncs(L, funcs, 0);
 	lua_pushvalue(L, -1);
 	lua_setfield(L, -1, "__index");
-	lua_setglobal(L, LUAOVERMQ);
+	lua_setglobal(L, STOCKMQ);
 	return 1;
 }
