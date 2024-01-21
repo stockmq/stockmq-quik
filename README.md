@@ -2,13 +2,17 @@
 
 StockMQ is a high-performance RPC library that uses MsgPack and ZeroMQ designed to use with QUIK (ARQA Technologies) trading terminal.
 
-On AMD Ryzen 5600x it performs 10000 RPS in average.
-
 # Features
 
 * Supports x64 architecture (QUIK 8.0 and above)
 * Works on Apple Silicon (using Parallels/VMWare and x64 emulation)
 * Compatible with Lua 5.3 and Lua 5.4
+
+# Performance
+
+On AMD Ryzen 5600x it performs 10000 RPS in average (depending on the query)
+
+# Example integration
 
 ```
 -- Configure LUA_CPATH
