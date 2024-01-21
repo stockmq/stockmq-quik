@@ -1,7 +1,5 @@
-﻿# CMakeList.txt : CMake project for LuaOverMQ, include source and define
-# project specific logic here.
-#
-cmake_minimum_required (VERSION 3.8)
+﻿# CMakeList.txt : CMake project for LuaOverMQ
+cmake_minimum_required (VERSION 3.12)
 
 # Enable Hot Reload for MSVC compilers if supported.
 if (POLICY CMP0141)
@@ -11,6 +9,7 @@ endif()
 
 # Change linking
 set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /MT")
+set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /MTd")
 
 project ("LuaOverMQ")
 
