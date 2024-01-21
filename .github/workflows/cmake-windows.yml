@@ -17,12 +17,10 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [windows-latest,ubuntu-latest]
+        os: [windows-latest]
         include:
           - os: windows-latest
             triplet: x64-windows
-          - os: ubuntu-latest
-            triplet: x64-linux
     env:
       VCPKG_DEFAULT_TRIPLET: ${{ matrix.triplet }}
 
