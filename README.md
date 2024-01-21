@@ -7,6 +7,7 @@ StockMQ is a high-performance RPC library that uses MsgPack and ZeroMQ designed 
 * Supports x64 architecture (QUIK 8.0 and above)
 * Works on Apple Silicon (using Parallels/VMWare and x64 emulation)
 * Compatible with Lua 5.3 and Lua 5.4
+* Provides Pub-Sub support for callback processing
 
 # Performance
 
