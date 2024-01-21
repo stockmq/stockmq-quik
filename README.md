@@ -1,6 +1,6 @@
-# StockMQ for QUIK
+# StockMQ
 
-StockMQ is a high-performance RPC library that uses MsgPack and ZeroMQ designed to use with QUIK trading terminal.
+StockMQ is a high-performance RPC library that uses MsgPack and ZeroMQ designed to use with QUIK (ARQA Technologies) trading terminal.
 
 On AMD Ryzen 5600x it performs 10000 RPS in average.
 
