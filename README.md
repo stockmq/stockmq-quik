@@ -7,7 +7,7 @@ On AMD Ryzen 5600x it performs 10000 RPS in average.
 ```
 -- Configure LUA_CPATH
 package.cpath = package.cpath .. ';' 
-    .. getScriptPath() .. "\\x64\\Release\\?.dll"
+    .. getScriptPath() .. "\\lib\\?.dll"
 
 -- Load C++ extension
 require("StockMQ")
@@ -16,23 +16,35 @@ require("StockMQ")
 STOCKMQ_ZMQ_REP = 4
 STOCKMQ_ZMQ_PUB = 1
 
--- Local variables
-local isRunning = true
+STOCKMQ_RPC_TIMEOUT = 10
+STOCKMQ_RPC_URI = "tcp://0.0.0.0:8004"
+STOCKMQ_PUB_URI = "tcp://0.0.0.0:8005"
 
--- Main function which creates two sockets (req-rep (RPC) and pub-sub)
+-- Global variables
+STOCKMQ_RUN = false
+STOCKMQ_PUB = nil
+
+-- Set global variable which is used by main() function
+function OnInit(script_path)
+    STOCKMQ_PUB = StockMQ.bind(STOCKMQ_PUB_URI, STOCKMQ_ZMQ_PUB)
+    STOCKMQ_RUN = true
+end
+
+-- Callback called when the script is stopped
+function OnStop(signal)
+    STOCKMQ_RUN = false
+    return STOCKMQ_RPC_TIMEOUT
+end
+
+-- Main function
 function main()
-    rpc = LuaOverMQ.bind("tcp://0.0.0.0:8004", STOCKMQ_ZMQ_REP)
-    pub = LuaOverMQ.bind("tcp://0.0.0.0:8005", STOCKMQ_ZMQ_PUB)
+    local rpc = StockMQ.bind(STOCKMQ_RPC_URI, STOCKMQ_ZMQ_REP)
 
-    -- Publish a message
-    if pub:send("topic", "Hello World!") ~= 0 then
-        print("LuaOverMQ Error: "..tostring(rpc:errno()))
-    end
+    message("StockMQ is listening on "..STOCKMQ_RPC_URI, 1)
 
-    -- RPC Server loop
-    while isRunning do
+    while STOCKMQ_RUN do
         if rpc:process() ~= 0 then
-            print("LuaOverMQ Error: "..tostring(rpc:errno()))
+            message("StockMQ Error: code " .. tostring(rpc:errno()), 1)
         end
     end
 end
@@ -101,7 +113,6 @@ if __name__ == "__main__":
 Before you begin building the application, you must have the following prerequisites installed on your system
 
 * [Visual Studio 2022 (C++ Desktop Development)](https://visualstudio.microsoft.com/downloads/)
-* [vcpkg](https://vcpkg.io/en/getting-started.html)
 
 # Building
 
