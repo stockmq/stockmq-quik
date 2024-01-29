@@ -63,4 +63,5 @@ jobs:
           name: my-artifact
           path: |
             builds/ninja-multi-vcpkg/**/Release/StockMQ.dll
+            integration/*
 
