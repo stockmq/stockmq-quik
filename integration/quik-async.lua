@@ -15,9 +15,14 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
 ]]
 
+-- Configure LUA_PATH
+package.path = package.path .. ';'
+    .. getScriptPath() .. "\\src\\?.lua"
+
 -- Configure LUA_CPATH
 package.cpath = package.cpath .. ';' 
-    .. getScriptPath() .. "\\lib\\?.dll"
+    .. getScriptPath() .. "\\lib\\"
+    .. _VERSION:gsub("Lua (%d).(%d)", "lua%1%2").. "\\Release\\?.dll"
 
 -- Load C++ extension
 require("StockMQ")
