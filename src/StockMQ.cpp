@@ -32,7 +32,7 @@ std::string wide_to_ansi(const std::wstring& wstr) {
 std::string wide_to_utf8(const std::wstring& wstr) {
 	auto count = WideCharToMultiByte(CP_UTF8, 0, wstr.c_str(), static_cast<int>(wstr.length()), NULL, 0, NULL, NULL);
 	auto str = std::string(count, 0);
-	WideCharToMultiByte(CP_UTF8, 0, wstr.c_str(), -1, &str[0], static_cast<int>(count), NULL, NULL);
+	WideCharToMultiByte(CP_UTF8, 0, wstr.c_str(), -1, &str[0], count, NULL, NULL);
 	return str;
 }
 
