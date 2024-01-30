@@ -62,4 +62,6 @@ jobs:
         with:
           name: release
           path: |
-            builds/ninja-multi-vcpkg/**/Release/StockMQ.dll
+            integration/lib/**/Release/StockMQ.dll
+            integration/src/*.lua
+            integration/*.lua
