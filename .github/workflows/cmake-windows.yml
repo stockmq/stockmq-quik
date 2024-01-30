@@ -6,10 +6,6 @@ on:
   pull_request:
     branches: [ "main" ]
 
-env:
-  # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
-  BUILD_TYPE: Release
-
 jobs:
   job:
     name: ${{ matrix.os }}-${{ github.workflow }}
@@ -53,7 +49,7 @@ jobs:
           cmakeListsTxtPath: '${{ github.workspace }}/CMakeLists.txt'
           configurePreset: 'ninja-multi-vcpkg'
           buildPreset: 'ninja-vcpkg-release'
-          buildPresetAdditionalArgs: '[`--config Release --target install`]'
+          buildPresetAdditionalArgs: '[`--config Release`]'
       - name: List $RUNNER_WORKSPACE after build
         run: find $RUNNER_WORKSPACE
         shell: bash
@@ -62,6 +58,6 @@ jobs:
         with:
           name: release
           path: |
-            integration/lib/**/StockMQ.dll
+            integration/lib/**/Release/StockMQ.dll
             integration/src/*.lua
             integration/*.lua
