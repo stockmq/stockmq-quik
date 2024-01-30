@@ -30,9 +30,9 @@ std::string wcs_to_mbs(const std::wstring& wstr, UINT page) {
 }
 
 std::wstring mbs_to_wcs(const std::string& str, UINT page) {
-	auto count = MultiByteToWideChar(CP_ACP, 0, str.c_str(), static_cast<int>(str.length()), NULL, 0);
+	auto count = MultiByteToWideChar(page, 0, str.c_str(), static_cast<int>(str.length()), NULL, 0);
 	auto wstr = std::wstring(count, 0);
-	MultiByteToWideChar(CP_ACP, 0, str.c_str(), static_cast<int>(str.length()), &wstr[0], count);
+	MultiByteToWideChar(page, 0, str.c_str(), static_cast<int>(str.length()), &wstr[0], count);
 	return wstr;
 }
 
