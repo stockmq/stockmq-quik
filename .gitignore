@@ -37,3 +37,4 @@ out/
 
 # Visual Studio and vcpkg
 .vs/
+.vscode/
