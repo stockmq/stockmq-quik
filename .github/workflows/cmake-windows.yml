@@ -53,7 +53,7 @@ jobs:
           cmakeListsTxtPath: '${{ github.workspace }}/CMakeLists.txt'
           configurePreset: 'ninja-multi-vcpkg'
           buildPreset: 'ninja-vcpkg-release'
-          buildPresetAdditionalArgs: '[`--install --config Release`]'
+          buildPresetAdditionalArgs: '[`--config Release --target install`]'
       - name: List $RUNNER_WORKSPACE after build
         run: find $RUNNER_WORKSPACE
         shell: bash
