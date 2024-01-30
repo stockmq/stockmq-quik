@@ -22,7 +22,7 @@ package.path = package.path .. ';'
 -- Configure LUA_CPATH
 package.cpath = package.cpath .. ';' 
     .. getScriptPath() .. "\\lib\\"
-    .. _VERSION:gsub("Lua (%d).(%d)", "lua%1%2").. "\\Release\\?.dll"
+    .. _VERSION:gsub("Lua (%d).(%d)", "lua%1%2").. "\\?.dll"
 
 -- Load C++ extension
 require("StockMQ")

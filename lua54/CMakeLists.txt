@@ -52,3 +52,5 @@ target_link_libraries(StockMQ54 PRIVATE msgpack-cxx)
 
 set_property(TARGET StockMQ54 PROPERTY CXX_STANDARD 20)
 set_property(TARGET StockMQ54 PROPERTY MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+
+install(TARGETS StockMQ54 DESTINATION lua54)
