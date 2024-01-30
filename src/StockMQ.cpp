@@ -137,11 +137,11 @@ struct StockMQ {
 	int zmq_err;
 };
 
-inline StockMQ* stockmq_check(lua_State* L, int n) {
+StockMQ* stockmq_check(lua_State* L, int n) {
 	return *(StockMQ**)luaL_checkudata(L, n, METATABLE);
 }
 
-inline void send_multipart(zmq::socket_t* zmq_skt, const std::string& header, const msgpack::sbuffer& buffer) {
+void send_multipart(zmq::socket_t* zmq_skt, const std::string& header, const msgpack::sbuffer& buffer) {
 	zmq_skt->send(zmq::message_t(header.data(), header.size()), zmq::send_flags::sndmore);
 	zmq_skt->send(zmq::message_t(buffer.data(), buffer.size()), zmq::send_flags::none);
 }
