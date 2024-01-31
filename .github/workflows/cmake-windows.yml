@@ -26,10 +26,6 @@ jobs:
           submodules: true
 
       - uses: lukka/get-cmake@latest
-      - name: dir
-        run: find $RUNNER_WORKSPACE
-        shell: bash
-
       - name: Setup vcpkg
         uses: lukka/run-vcpkg@v11
         id: runvcpkg
@@ -64,6 +60,7 @@ jobs:
       - uses: actions/download-artifact@v4
         with:
           name: release
+          path: artifacts
       - name: Display structure of downloaded files
-        run: ls -R
+        run: ls -R artifacts
         shell: bash
