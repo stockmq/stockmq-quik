@@ -82,7 +82,7 @@ end
 
 --- Return current UNIX time
 function stockmq_time()
-    return LuaOverMQ.time()
+    return StockMQ.time()
 end
 
 -- Format price with scale

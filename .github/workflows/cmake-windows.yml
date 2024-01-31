@@ -6,10 +6,6 @@ on:
   pull_request:
     branches: [ "main" ]
 
-env:
-  # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
-  BUILD_TYPE: Release
-
 jobs:
   job:
     name: ${{ matrix.os }}-${{ github.workflow }}
@@ -46,7 +42,7 @@ jobs:
         shell: bash
       - name: Prints output of run-vcpkg's action.
         run: echo "root='${{ steps.runvcpkg.outputs.RUNVCPKG_VCPKG_ROOT_OUT }}', triplet='${{ steps.runvcpkg.outputs.RUNVCPKG_VCPKG_DEFAULT_TRIPLET_OUT }}' "
-      - name: Run CMake+vcpkg+NinjaMulti-Config (Release configuration)
+      - name: Run CMake ($BUILD_TYPE configuration)
         uses: lukka/run-cmake@v10
         id: runcmake
         with:
@@ -60,8 +56,8 @@ jobs:
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: my-artifact
+          name: release
           path: |
-            builds/ninja-multi-vcpkg/**/Release/StockMQ.dll
-            integration/*
-
+            integration/lib/**/Release/StockMQ.dll
+            integration/src/*.lua
+            integration/*.lua

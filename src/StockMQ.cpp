@@ -22,40 +22,26 @@ constexpr auto STATUS_ERROR = "ERROR";
 constexpr auto STATUS_OK = "OK";
 
 // String Utils
-std::string wide_to_ansi(const std::wstring& wstr) {
-	auto count = WideCharToMultiByte(CP_ACP, 0, wstr.c_str(), static_cast<int>(wstr.length()), NULL, 0, NULL, NULL);
+std::string wcs_to_mbs(const std::wstring& wstr, UINT page) {
+	auto count = WideCharToMultiByte(page, 0, wstr.c_str(), static_cast<int>(wstr.length()), NULL, 0, NULL, NULL);
 	auto str = std::string(count, 0);
-	WideCharToMultiByte(CP_ACP, 0, wstr.c_str(), -1, &str[0], count, NULL, NULL);
+	WideCharToMultiByte(page, 0, wstr.c_str(), -1, &str[0], count, NULL, NULL);
 	return str;
 }
 
-std::string wide_to_utf8(const std::wstring& wstr) {
-	auto count = WideCharToMultiByte(CP_UTF8, 0, wstr.c_str(), static_cast<int>(wstr.length()), NULL, 0, NULL, NULL);
-	auto str = std::string(count, 0);
-	WideCharToMultiByte(CP_UTF8, 0, wstr.c_str(), -1, &str[0], count, NULL, NULL);
-	return str;
-}
-
-std::wstring ansi_to_wide(const std::string& str) {
-	auto count = MultiByteToWideChar(CP_ACP, 0, str.c_str(), static_cast<int>(str.length()), NULL, 0);
+std::wstring mbs_to_wcs(const std::string& str, UINT page) {
+	auto count = MultiByteToWideChar(page, 0, str.c_str(), static_cast<int>(str.length()), NULL, 0);
 	auto wstr = std::wstring(count, 0);
-	MultiByteToWideChar(CP_ACP, 0, str.c_str(), static_cast<int>(str.length()), &wstr[0], count);
-	return wstr;
-}
-
-std::wstring utf8_to_wide(const std::string& str) {
-	auto count = MultiByteToWideChar(CP_UTF8, 0, str.c_str(), static_cast<int>(str.length()), NULL, 0);
-	auto wstr = std::wstring(count, 0);
-	MultiByteToWideChar(CP_UTF8, 0, str.c_str(), static_cast<int>(str.length()), &wstr[0], count);
+	MultiByteToWideChar(page, 0, str.c_str(), static_cast<int>(str.length()), &wstr[0], count);
 	return wstr;
 }
 
 std::string utf8_to_ansi(const std::string& str) {
-	return wide_to_ansi(utf8_to_wide(str));
+	return wcs_to_mbs(mbs_to_wcs(str, CP_UTF8), CP_ACP);
 }
 
 std::string ansi_to_utf8(const std::string& str) {
-	return wide_to_utf8(ansi_to_wide(str));
+	return wcs_to_mbs(mbs_to_wcs(str, CP_ACP), CP_UTF8);
 }
 
 // Stack Utils
@@ -151,11 +137,11 @@ struct StockMQ {
 	int zmq_err;
 };
 
-inline StockMQ* stockmq_check(lua_State* L, int n) {
+StockMQ* stockmq_check(lua_State* L, int n) {
 	return *(StockMQ**)luaL_checkudata(L, n, METATABLE);
 }
 
-inline void send_multipart(zmq::socket_t* zmq_skt, const std::string& header, const msgpack::sbuffer& buffer) {
+void send_multipart(zmq::socket_t* zmq_skt, const std::string& header, const msgpack::sbuffer& buffer) {
 	zmq_skt->send(zmq::message_t(header.data(), header.size()), zmq::send_flags::sndmore);
 	zmq_skt->send(zmq::message_t(buffer.data(), buffer.size()), zmq::send_flags::none);
 }

@@ -50,6 +50,6 @@ target_link_libraries(StockMQ54 PRIVATE lua54)
 target_link_libraries(StockMQ54 PRIVATE cppzmq cppzmq-static)
 target_link_libraries(StockMQ54 PRIVATE msgpack-cxx)
 
-if (CMAKE_VERSION VERSION_GREATER 3.12)
-  set_property(TARGET StockMQ54 PROPERTY CXX_STANDARD 20)
-endif()
+set_property(TARGET StockMQ54 PROPERTY CXX_STANDARD 20)
+set_property(TARGET StockMQ54 PROPERTY MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+
