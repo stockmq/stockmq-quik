@@ -7,6 +7,9 @@
 *.o
 *.obj
 
+# Compiled Object files (Python)
+*.pyc
+
 # Precompiled Headers
 *.gch
 *.pch
@@ -39,3 +42,7 @@ integration/lib
 # Visual Studio and vcpkg
 .vs/
 .vscode/
+
+# Mac
+.DS_Store
+
