@@ -12,54 +12,47 @@ StockMQ is a high-performance RPC library that uses MsgPack and ZeroMQ designed 
 
 # Performance
 
-On AMD Ryzen 5600x it performs 10000 RPS in average (depending on the query)
+MacBook Pro 16 (M1 Pro): 18000 RPS using Go client example.
 
-# Example integration
+# Python API
 
 ```
--- Configure LUA_CPATH
-package.cpath = package.cpath .. ';' 
-    .. getScriptPath() .. "\\lib\\?.dll"
+import asyncio
+import time
 
--- Load C++ extension
-require("StockMQ")
+from stockmq.api import Quik, TimeInForce, Side, QuikTable
 
--- Global constants
-STOCKMQ_ZMQ_REP = 4
-STOCKMQ_ZMQ_PUB = 1
+api = Quik("tcp://10.211.55.3:8004")
 
-STOCKMQ_RPC_TIMEOUT = 10
-STOCKMQ_RPC_URI = "tcp://0.0.0.0:8004"
-STOCKMQ_PUB_URI = "tcp://0.0.0.0:8005"
+client = "CLIENT"
+board = "TQBR"
+ticker = "SBER"
 
--- Global variables
-STOCKMQ_RUN = false
-STOCKMQ_PUB = nil
+async def main():
+    # Print version and connection information
+    print(api.info.VERSION)
+    print(api.is_connected)
 
--- Set global variable which is used by main() function
-function OnInit(script_path)
-    STOCKMQ_PUB = StockMQ.bind(STOCKMQ_PUB_URI, STOCKMQ_ZMQ_PUB)
-    STOCKMQ_RUN = true
-end
+    # List trade accounts
+    for i in api.trade_accounts:
+        print(i)
 
--- Callback called when the script is stopped
-function OnStop(signal)
-    STOCKMQ_RUN = false
-    return STOCKMQ_RPC_TIMEOUT
-end
+    # List classes available to trade
+    for i in api.get_classes():
+        print(i)
 
--- Main function
-function main()
-    local rpc = StockMQ.bind(STOCKMQ_RPC_URI, STOCKMQ_ZMQ_REP)
+    # Create transaction to BUY and wait for completion
+    tx = await api.create_order(client, board, ticker, TimeInForce.DAY, Side.BUY, 1600.0, 1)
+    print(tx)
+    print(tx.updated_ts - tx.created_ts)
 
-    message("StockMQ is listening on "..STOCKMQ_RPC_URI, 1)
+    # Create transaction to cancel the order
+    tx = await api.cancel_order(client, board, ticker, tx.order_id, timeout=4.0)
+    print(tx)
+    print(tx.updated_ts - tx.created_ts)
 
-    while STOCKMQ_RUN do
-        if rpc:process() ~= 0 then
-            message("StockMQ Error: code " .. tostring(rpc:errno()), 1)
-        end
-    end
-end
+if __name__ == '__main__':
+    asyncio.run(main())
 ```
 
 # Protocol implementation
