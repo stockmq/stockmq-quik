@@ -1,0 +1,6 @@
+---
+storage_options:
+  key: minioadmin
+  secret: minioadmin
+  client_kwargs:
+    endpoint_url: http://localhost:9000
