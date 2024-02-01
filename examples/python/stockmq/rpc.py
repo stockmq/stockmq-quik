@@ -37,7 +37,12 @@ class RPCClient:
             result = msgpack.unpackb(s2, strict_map_key=False)
 
             if status == self.RPC_OK:
-                return result
+                result_len = len(result)
+                if result_len > 0:
+                    if result_len == 1:
+                        return result[0]
+                    else:
+                        return result
             else:
                 raise RPCRuntimeError(result)
         else:

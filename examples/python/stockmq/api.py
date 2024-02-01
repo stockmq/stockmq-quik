@@ -253,8 +253,8 @@ class Quik(RPCClient):
     def debug(self, message) -> None:
         self.call("PrintDbgStr", message)
 
-    def test(self, payload) -> Any:
-        return self.call("stockmq_test", payload)
+    def test(self, *args: Any) -> Any:
+        return self.call("stockmq_test", *args)
 
     @property
     def firms(self) -> Any:
