@@ -5,15 +5,20 @@ import (
 	"time"
 )
 
-func (q *Quik) Test(payload interface{}) interface{} {
-	return Call[interface{}](q, "stockmq_test", payload)
+func (q *Quik) Test(payload interface{}) (interface{}, error) {
+	r, err := CallTyped[interface{}](q, "stockmq_test", payload)
+	if err != nil {
+		return nil, err
+	}
+
+	return r, nil
 }
 
-func (q *Quik) Time() time.Time {
-	sec, dec := math.Modf(Call[float64](q, "stockmq_time"))
-	return time.Unix(int64(sec), int64(dec))
-}
-
-func (q *Quik) Repl(payload string) interface{} {
-	return Call[interface{}](q, "stockmq_repl", payload)
+func (q *Quik) Time() (time.Time, error) {
+	ut, err := CallTyped[float64](q, "stockmq_time")
+	if err != nil {
+		return time.Time{}, err
+	}
+	sec, dec := math.Modf(ut)
+	return time.Unix(int64(sec), int64(dec)), nil
 }

@@ -14,21 +14,15 @@ func info() {
 
 	conn.Connect()
 
-	fmt.Println("Connected", conn.IsConnected())
-	fmt.Println("Path", conn.GetScriptPath())
-	fmt.Println("Time", conn.Time())
-	fmt.Println("Repl", conn.Repl("return 2*2"))
+	fmt.Println(conn.IsConnected())
+	fmt.Println(conn.GetScriptPath())
+	fmt.Println(conn.Time())
 }
 
 func main() {
 	info()
 
 	var wg sync.WaitGroup
-
-	// r := quik.GetSecurityInfo("TQBR", "SBER")
-	// for i := range r {
-	// 	fmt.Println(i, r[i])
-	// }
 
 	t0 := time.Now()
 	c0 := 0

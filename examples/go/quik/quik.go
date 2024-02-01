@@ -1,6 +1,7 @@
 package quik
 
 import (
+	"errors"
 	"log"
 
 	"github.com/pebbe/zmq4"
@@ -42,7 +43,7 @@ func (q *Quik) Close() error {
 	return q.zmq_skt.Close()
 }
 
-func (q *Quik) Invoke(args ...interface{}) {
+func (q *Quik) Invoke(args ...interface{}) ([]byte, error) {
 	b, err := msgpack.Marshal(args)
 	if err != nil {
 		log.Println(err)
@@ -53,31 +54,43 @@ func (q *Quik) Invoke(args ...interface{}) {
 	for _, socket := range sockets {
 		switch s := socket.Socket; s {
 		case q.zmq_skt:
-			s.Recv(zmq4.SNDMORE)
-			s.RecvBytes(zmq4.Flag(0))
+			status, err := s.Recv(zmq4.SNDMORE)
+			if err != nil {
+				return nil, err
+			}
+
+			bytes, err := s.RecvBytes(zmq4.Flag(0))
+			if err != nil {
+				return nil, err
+			}
+
+			if status != "OK" {
+				var errstr string
+				if err := msgpack.Unmarshal(bytes, &errstr); err != nil {
+					return bytes, err
+				}
+
+				return bytes, errors.New(errstr)
+			}
+
+			return bytes, nil
 		}
 	}
+
+	return nil, errors.New("timeout error")
 }
 
-func Call[T string | interface{} | bool | int | map[string]interface{}](q *Quik, args ...interface{}) T {
-	b, err := msgpack.Marshal(args)
+func CallTyped[T any](q *Quik, args ...interface{}) (T, error) {
+	bytes, err := q.Invoke(args...)
+	var result [1]T
+
 	if err != nil {
-		log.Println(err)
+		return result[0], err
 	}
-	q.zmq_skt.SendBytes(b, zmq4.DONTWAIT)
 
-	sockets, _ := q.zmq_pll.Poll(-1)
-	var result T
-
-	for _, socket := range sockets {
-		switch s := socket.Socket; s {
-		case q.zmq_skt:
-			s.Recv(zmq4.SNDMORE)
-			bytes, _ := s.RecvBytes(zmq4.Flag(0))
-
-			msgpack.Unmarshal(bytes, &result)
-			return result
-		}
+	if err := msgpack.Unmarshal(bytes, &result); err != nil {
+		return result[0], err
 	}
-	return result
+
+	return result[0], nil
 }
