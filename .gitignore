@@ -42,3 +42,7 @@ integration/lib
 # Mac
 .DS_Store
 
+# Examples
+examples/csharp/*/bin/
+examples/csharp/*/obj/
+examples/python/venv/
