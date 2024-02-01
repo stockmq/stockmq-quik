@@ -191,19 +191,9 @@ static int stockmq_process(lua_State* L) {
 						if (!lua_pcall(L, handle.get().via.array.size - 1, LUA_MULTRET, 0)) {
 							auto results = lua_gettop(L) - level;
 
-							switch (results) {
-							case 0:
-								packer.pack_nil();
-								break;
-							case 1:
-								stack_pack(packer, L, lua_gettop(L));
-								break;
-							default:
-								packer.pack_array(results);
-								for (auto i = results; i > 0; i--) {
-									stack_pack(packer, L, lua_gettop(L) - i + 1);
-								}
-								break;
+							packer.pack_array(results);
+							for (auto i = results; i > 0; i--) {
+								stack_pack(packer, L, lua_gettop(L) - i + 1);
 							}
 
 							for (auto i = 0; i < results; i++) {
