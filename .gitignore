@@ -9,6 +9,7 @@
 
 # Compiled Object files (Python)
 *.pyc
+venv/
 
 # Precompiled Headers
 *.gch
@@ -49,6 +50,7 @@ examples/csharp/*/bin/
 examples/nodejs/dist/
 examples/nodejs/node_modules/
 examples/golang/golang
-examples/java/target
-venv/
+examples/java/target/
+examples/kotlin/build/
+
 
