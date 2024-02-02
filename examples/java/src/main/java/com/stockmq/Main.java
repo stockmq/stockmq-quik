@@ -19,8 +19,6 @@ import java.util.Map;
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 public class Main {
     public static void main(String[] args) {
-        //TIP Press <shortcut actionId="ShowIntentionActions"/> with your caret at the highlighted text
-        // to see how IntelliJ IDEA suggests fixing it.
         System.out.println("StockMQ Java Example");
 
         try (ZContext context = new ZContext()) {
@@ -50,7 +48,7 @@ public class Main {
             int isConnected = unpacker.unpackInt();
 
             // Print connection status to the broker
-            System.out.printf("Connected: %b", isConnected > 0);
+            System.out.printf("Connected: %b\n", isConnected > 0);
 
             // Pack SBER request
             ObjectMapper objectMapper = new ObjectMapper(new MessagePackFactory());
@@ -60,10 +58,12 @@ public class Main {
             String statusSBER = socket.recvStr();
             byte[] resultSBER = socket.recv();
 
+            Map<String, String> sber = objectMapper.readValue(resultSBER, new TypeReference<Map<String, String>>() {});
+
             // Print SBER latest price data
+            System.out.println("SBER QUOTE");
             System.out.printf("Status %s\n", status);
-            System.out.println("Result: ");
-            System.out.println(objectMapper.readValue(resultSBER, new TypeReference<Map<String, String>>() {}));
+            System.out.printf("Last price: %s", sber.get("param_value") );
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
