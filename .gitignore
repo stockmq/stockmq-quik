@@ -47,5 +47,6 @@ examples/csharp/*/obj/
 examples/csharp/*/bin/
 examples/nodejs/dist/
 examples/nodejs/node_modules/
+examples/golang/golang
 venv/
 
