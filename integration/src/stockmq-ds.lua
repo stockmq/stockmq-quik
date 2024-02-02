@@ -91,6 +91,6 @@ end
 -- Callback clojure for the datasource
 function stockmq_ds_callback(name)
     return function(index)
-        stockmq_publish(name, {ts=stockmq_time(), msg=stockmq_ds_peek(name, index)})
+        stockmq_publish(name, {ts=stockmq_time(), msg=stockmq_ds_peek(name, index-1)})
     end
 end
