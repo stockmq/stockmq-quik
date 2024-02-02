@@ -45,4 +45,7 @@ integration/lib
 # Examples
 examples/csharp/*/obj/
 examples/csharp/*/bin/
+examples/nodejs/dist/
+examples/nodejs/node_modules/
 venv/
+
