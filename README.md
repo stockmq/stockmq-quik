@@ -10,10 +10,6 @@ StockMQ is a high-performance RPC library that uses MsgPack and ZeroMQ designed 
 * Compatible with Lua 5.3 and Lua 5.4
 * Provides Pub-Sub support for callback processing
 
-# Performance
-
-MacBook Pro 16 (M1 Pro): 18000 RPS using Go client example.
-
 # Python API
 
 ```
