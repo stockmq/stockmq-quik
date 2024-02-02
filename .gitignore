@@ -35,9 +35,10 @@ builds/
 out/
 integration/lib
 
-# Visual Studio and vcpkg
+# IDE
 .vs/
 .vscode/
+.idea/
 
 # Mac
 .DS_Store
@@ -48,5 +49,6 @@ examples/csharp/*/bin/
 examples/nodejs/dist/
 examples/nodejs/node_modules/
 examples/golang/golang
+examples/java/target
 venv/
 
