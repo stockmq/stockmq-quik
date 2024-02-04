@@ -9,6 +9,7 @@
 
 # Compiled Object files (Python)
 *.pyc
+.venv/
 venv/
 
 # Precompiled Headers
