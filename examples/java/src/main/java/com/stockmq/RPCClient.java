@@ -25,9 +25,9 @@ class RPCTimeoutError extends RuntimeException {
 
 public class RPCClient implements AutoCloseable {
     private static final String RPC_OK = "OK";
-    private ZContext zmqCtx;
-    private ZMQ.Socket zmqSkt;
-    private int timeout;
+    private final ZContext zmqCtx;
+    private final ZMQ.Socket zmqSkt;
+    private final int timeout;
 
     public RPCClient() {
         this("tcp://127.0.0.1:8004", 5000);
