@@ -16,14 +16,14 @@ class RPCClient(uri: String = "tcp://127.0.0.1:8004", private val timeout: Int =
         connect(uri)
     }
 
-    fun call(method: String, vararg args: Any, timeout: Int? = null): Any {
+    fun call(method: String, vararg args: Any, timeout: Long = 5000): Any {
         zmqSkt.send(MessagePack.pack(listOf(method, *args)))
 
         val poller = zmqCtx.createPoller(1).apply {
             register(zmqSkt, ZMQ.Poller.POLLIN)
         }
 
-        if (poller.poll((timeout ?: this.timeout).toLong()) == ZMQ.Poller.POLLIN) {
+        if (poller.poll(timeout) == ZMQ.Poller.POLLIN) {
             val status = zmqSkt.recvStr()
             val result = zmqSkt.recv()
             if (status == RPC_OK) {

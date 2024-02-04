@@ -2,57 +2,116 @@ package main
 
 import (
 	"fmt"
-	"sync"
 	"time"
 
-	"github.com/stockmq/stockmq-server/examples/golang/quik"
+	zmq "github.com/pebbe/zmq4"
+	msgpack "github.com/vmihailenco/msgpack/v5"
 )
 
-func info() {
-	conn, _ := quik.NewQuik("tcp://10.211.55.3:8004")
-	defer conn.Close()
+const RPC_OK = "OK"
 
-	conn.Connect()
+type RPCRuntimeError struct {
+	message string
+}
 
-	fmt.Println("Connected", conn.IsConnected())
-	fmt.Println("Path", conn.GetScriptPath())
-	fmt.Println("Time", conn.Time())
-	fmt.Println("Repl", conn.Repl("return 2*2"))
+func (e *RPCRuntimeError) Error() string {
+	return e.message
+}
 
-	r := conn.GetSecurityInfo("TQBR", "SBER")
-	for i := range r {
-		fmt.Println(i, r[i])
+type RPCTimeoutError struct {
+	message string
+}
+
+func (e *RPCTimeoutError) Error() string {
+	return e.message
+}
+
+type RPCClient struct {
+	uri     string
+	timeout time.Duration
+	zmqCtx  *zmq.Context
+	zmqSkt  *zmq.Socket
+}
+
+func NewRPCClient(uri string, timeout int) (*RPCClient, error) {
+	zmqCtx, err := zmq.NewContext()
+	if err != nil {
+		return nil, err
+	}
+	zmqSkt, err := zmqCtx.NewSocket(zmq.REQ)
+	if err != nil {
+		return nil, err
+	}
+	zmqSkt.SetRcvtimeo(time.Duration(timeout) * time.Millisecond)
+	zmqSkt.SetLinger(0)
+	err = zmqSkt.Connect(uri)
+	if err != nil {
+		return nil, err
+	}
+	return &RPCClient{
+		uri:     uri,
+		timeout: time.Duration(timeout) * time.Millisecond,
+		zmqCtx:  zmqCtx,
+		zmqSkt:  zmqSkt,
+	}, nil
+}
+
+func (c *RPCClient) Call(method string, args ...interface{}) (interface{}, error) {
+	packed, err := msgpack.Marshal(append([]interface{}{method}, args...))
+	if err != nil {
+		return nil, err
+	}
+	_, err = c.zmqSkt.SendBytes(packed, 0)
+	if err != nil {
+		return nil, err
+	}
+	poller := zmq.NewPoller()
+	poller.Add(c.zmqSkt, zmq.POLLIN)
+	polled, err := poller.Poll(c.timeout)
+	if err != nil {
+		return nil, err
+	}
+	if len(polled) == 1 {
+		status, err := c.zmqSkt.Recv(0)
+		if err != nil {
+			return nil, err
+		}
+		result, err := c.zmqSkt.RecvBytes(0)
+		if err != nil {
+			return nil, err
+		}
+		if status == RPC_OK {
+			var unpacked interface{}
+			err = msgpack.Unmarshal(result, &unpacked)
+			if err != nil {
+				return nil, err
+			}
+			return unpacked, nil
+		} else {
+			return nil, &RPCRuntimeError{message: string(result)}
+		}
+	} else {
+		return nil, &RPCTimeoutError{message: "Timeout error"}
 	}
 }
 
-func benchmark() {
-	var wg sync.WaitGroup
-
-	t0 := time.Now()
-	c0 := 0
-	f0 := 100000
-	for x := 0; x < 7; x++ {
-		wg.Add(1)
-		c0 += f0
-		go func(id int) {
-			c, _ := quik.NewQuik("tcp://10.211.55.3:8004")
-
-			defer wg.Done()
-			defer c.Close()
-
-			c.Connect()
-
-			for i := 0; i < f0; i++ {
-				c.Test(i)
-			}
-		}(x)
+func (c *RPCClient) Close() error {
+	if err := c.zmqSkt.Close(); err != nil {
+		return err
 	}
-	wg.Wait()
-
-	fmt.Println("RPS", float64(c0)/time.Since(t0).Seconds())
+	return c.zmqCtx.Term()
 }
 
 func main() {
-	info()
-	benchmark()
+	fmt.Println("StockMQ Go Example")
+	rpc, err := NewRPCClient("tcp://10.211.55.3:8004", 5000)
+	if err != nil {
+		panic(err)
+	}
+	defer rpc.Close()
+	res, err := rpc.Call("getParamEx2", "TQBR", "SBER", "LAST")
+	if err != nil {
+		panic(err)
+	}
+	fmt.Printf("Result %v\n", res)
 }
