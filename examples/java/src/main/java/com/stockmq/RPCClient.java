@@ -32,6 +32,9 @@ public class RPCClient implements AutoCloseable {
     public RPCClient() {
         this("tcp://127.0.0.1:8004", 5000);
     }
+    public RPCClient(String uri) {
+        this(uri, 5000);
+    }
 
     public RPCClient(String uri, int timeout) {
         this.timeout = timeout;
