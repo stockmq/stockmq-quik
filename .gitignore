@@ -53,5 +53,5 @@ examples/nodejs/node_modules/
 examples/golang/golang
 examples/java/target/
 examples/kotlin/build/
-
+examples/kotlin/.gradle/
 
