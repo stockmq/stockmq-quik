@@ -4,7 +4,7 @@ on: push
 
 jobs:
   job:
-    name: ${{ matrix.os }}-${{ github.workflow }}
+    name: cmake-${{ matrix.triplet }}
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
