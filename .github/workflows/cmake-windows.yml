@@ -74,6 +74,9 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: stockmq-quik-examples
+      - name: Display structure of downloaded files
+        run: ls -R
+        shell: bash
       - name: Archive Release (stockmq-quik-connector)
         uses: thedoctor0/zip-release@0.7.5
         with:
