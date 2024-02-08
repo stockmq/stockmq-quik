@@ -1,4 +1,4 @@
-module github.com/stockmq/stockmq-server/examples/golang/rpcclient-native
+module github.com/stockmq/stockmq-server/examples/golang
 
 go 1.21
 
