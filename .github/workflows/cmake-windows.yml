@@ -55,15 +55,42 @@ jobs:
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: release
+          name: stockmq-quik-connector
           path: |
             integration/lib/**/Release/StockMQ.dll
             integration/src/*.lua
             integration/*.lua
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: stockmq-quik-examples
+          path: |
+            examples
+      - name: Download artifact (stockmq-quik-connector)
+        uses: actions/download-artifact@v4
+        with:
+          name: stockmq-quik-connector
+      - name: Download artifact (stockmq-quik-examples)
+        uses: actions/download-artifact@v4
+        with:
+          name: stockmq-quik-examples
+      - name: Archive Release (stockmq-quik-connector)
+        uses: thedoctor0/zip-release@0.7.5
+        with:
+          type: zip
+          path: stockmq-quik-connector
+          filename: stockmq-quik-connector.zip
+      - name: Archive Release (stockmq-quik-examples)
+        uses: thedoctor0/zip-release@0.7.5
+        with:
+          type: zip
+          path: stockmq-quik-examples
+          filename: stockmq-quik-examples.zip
       - name: Release
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')
         with:
           files: |
-            LICENSE
+            stockmq-quik-connector.zip
+            stockmq-quik-examples.zip
 
