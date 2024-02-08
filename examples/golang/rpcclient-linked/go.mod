@@ -1,4 +1,4 @@
-module github.com/stockmq/stockmq-server/examples/golang
+module github.com/stockmq/stockmq-server/examples/golang/rpcclient-linked
 
 go 1.21
 

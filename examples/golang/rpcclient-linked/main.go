@@ -1,7 +1,9 @@
 package main
 
 import (
+	"errors"
 	"fmt"
+	"log"
 	"time"
 
 	zmq "github.com/pebbe/zmq4"
@@ -56,7 +58,7 @@ func NewRPCClient(uri string, timeout int) (*RPCClient, error) {
 	}, nil
 }
 
-func (c *RPCClient) Call(method string, args ...interface{}) (interface{}, error) {
+func (c *RPCClient) Call(method string, args ...interface{}) ([]byte, error) {
 	packed, err := msgpack.Marshal(append([]interface{}{method}, args...))
 	if err != nil {
 		return nil, err
@@ -81,18 +83,30 @@ func (c *RPCClient) Call(method string, args ...interface{}) (interface{}, error
 			return nil, err
 		}
 		if status == RPC_OK {
-			var unpacked interface{}
-			err = msgpack.Unmarshal(result, &unpacked)
-			if err != nil {
-				return nil, err
-			}
-			return unpacked, nil
+			return result, nil
 		} else {
+			var errstr string
+			if err := msgpack.Unmarshal(result, &errstr); err != nil {
+				return nil, errors.Join(err, &RPCRuntimeError{message: string(result)})
+			}
 			return nil, &RPCRuntimeError{message: string(result)}
 		}
 	} else {
 		return nil, &RPCTimeoutError{message: "Timeout error"}
 	}
+}
+
+func (c *RPCClient) CallWithResult(result interface{}, method string, args ...interface{}) error {
+	bytes, err := c.Call(method, args...)
+	if err != nil {
+		return err
+	}
+	if result != nil {
+		if err := msgpack.Unmarshal(bytes, result); err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 func (c *RPCClient) Close() error {
@@ -104,14 +118,25 @@ func (c *RPCClient) Close() error {
 
 func main() {
 	fmt.Println("StockMQ Go Example")
-	rpc, err := NewRPCClient("tcp://10.211.55.3:8004", 5000)
+	rpc, err := NewRPCClient("tcp://10.211.55.3:8004", 100)
 	if err != nil {
-		panic(err)
+		log.Fatalln(err)
 	}
 	defer rpc.Close()
-	res, err := rpc.Call("getParamEx2", "TQBR", "SBER", "LAST")
+
+	var res1 map[string]string
+	bytes, err := rpc.Call("getParamEx2", "TQBR", "SBER", "LAST")
 	if err != nil {
-		panic(err)
+		log.Fatalln(err)
 	}
-	fmt.Printf("Result %v\n", res)
+	if err := msgpack.Unmarshal(bytes, &res1); err != nil {
+		log.Fatalln(err)
+	}
+	fmt.Printf("Result %v\n", res1)
+
+	var res2 map[string]string
+	if err := rpc.CallWithResult(&res2, "getParamEx2", "TQBR", "SBER", "LAST"); err != nil {
+		log.Fatalln(err)
+	}
+	fmt.Printf("Result %v\n", res2["param_value"])
 }
