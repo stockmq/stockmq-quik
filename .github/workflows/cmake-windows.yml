@@ -1,10 +1,6 @@
 name: Build
 
-on:
-  push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+on: push
 
 jobs:
   job:
@@ -61,3 +57,10 @@ jobs:
             integration/lib/**/Release/StockMQ.dll
             integration/src/*.lua
             integration/*.lua
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: |
+            README.md
+            LICENSE
