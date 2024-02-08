@@ -22,9 +22,6 @@ class RPCTimeoutException extends RuntimeException {
     public RPCTimeoutException() {
         super();
     }
-    public RPCTimeoutException(String s) {
-        super(s);
-    }
 }
 
 public class RPCClient implements AutoCloseable {

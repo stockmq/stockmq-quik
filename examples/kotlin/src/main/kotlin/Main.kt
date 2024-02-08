@@ -8,7 +8,7 @@ import org.zeromq.ZMQ
 class RPCRuntimeException(message: String) : Exception(message)
 class RPCTimeoutException() : Exception()
 
-class RPCClient(uri: String = "tcp://127.0.0.1:8004", private val timeout: Int = 5000) : AutoCloseable {
+class RPCClient(uri: String = "tcp://127.0.0.1:8004", private val timeout: Int = 1000) : AutoCloseable {
     private val zmqCtx = ZContext(1)
     private val zmqSkt = zmqCtx.createSocket(SocketType.REQ).apply {
         this.receiveTimeOut = timeout
@@ -46,10 +46,6 @@ class RPCClient(uri: String = "tcp://127.0.0.1:8004", private val timeout: Int =
     }
 }
 
-/*
-    StockMQ Kotlin Example
-    Result {"param_image":"276.64","result":"1","param_value":"276.640000","param_type":"1"}
- */
 fun main() {
     println("StockMQ Kotlin Example")
     RPCClient("tcp://127.0.0.1:8004").use { rpc ->
