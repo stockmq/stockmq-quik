@@ -25,9 +25,6 @@ jobs:
           submodules: true
 
       - uses: lukka/get-cmake@latest
-      - name: dir
-        run: find $RUNNER_WORKSPACE
-        shell: bash
 
       - name: Setup vcpkg
         uses: lukka/run-vcpkg@v11
@@ -36,11 +33,9 @@ jobs:
           vcpkgDirectory: '${{ github.workspace }}/vcpkg'
           vcpkgJsonGlob: '**/vcpkg.json'
 
-      - name: List $RUNNER_WORKSPACE before build
-        run: find $RUNNER_WORKSPACE
-        shell: bash
       - name: Prints output of run-vcpkg's action.
         run: echo "root='${{ steps.runvcpkg.outputs.RUNVCPKG_VCPKG_ROOT_OUT }}', triplet='${{ steps.runvcpkg.outputs.RUNVCPKG_VCPKG_DEFAULT_TRIPLET_OUT }}' "
+
       - name: Run CMake ($BUILD_TYPE configuration)
         uses: lukka/run-cmake@v10
         id: runcmake
@@ -49,9 +44,6 @@ jobs:
           configurePreset: 'ninja-multi-vcpkg'
           buildPreset: 'ninja-vcpkg-release'
           buildPresetAdditionalArgs: '[`--config Release`]'
-      - name: List $RUNNER_WORKSPACE after build
-        run: find $RUNNER_WORKSPACE
-        shell: bash
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
