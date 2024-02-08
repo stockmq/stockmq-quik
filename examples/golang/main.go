@@ -5,8 +5,6 @@ import (
 	"errors"
 	"fmt"
 	"log"
-	"time"
-	"sync"
 
 	zmq4 "github.com/go-zeromq/zmq4"
 	msgpack "github.com/vmihailenco/msgpack/v5"
@@ -79,45 +77,11 @@ func (c *RPCClient) CallWithResult(result interface{}, method string, args ...in
 
 func main() {
 	fmt.Println("StockMQ Go Example")
-	ctx, cancel := context.WithTimeout(context.Background(), 100*time.Millisecond)
-	defer cancel()
-
-	rpc, err := NewRPCClient(ctx, "tcp://127.0.0.1:8004")
+	rpc, err := NewRPCClient(context.Background(), "tcp://127.0.0.1:8004")
 	if err != nil {
 		log.Fatalln(err)
 	}
 	defer rpc.Close()
-
-	t0 := time.Now()
-	r := 0
-	c := 100000
-	for i := 0; i < c; i++ {
-		rpc.CallWithResult(&r, "stockmq_test", 1)
-	}
-	t1 := time.Since(t0)
-	log.Printf("Seconds: %f, RPS: %f", t1.Seconds(), float64(c)/t1.Seconds())
-
-	var wg sync.WaitGroup
-	t0 = time.Now()
-	c0 := 0
-	f0 := 100000
-	for x := 0; x < 7; x++ {
-		wg.Add(1)
-		c0 += f0
-		go func(id int) {
-			qk, _ := NewRPCClient(context.Background(), "tcp://127.0.0.1:8004")
-
-			defer wg.Done()
-			defer qk.Close()
-
-			for i := 0; i < f0; i++ {
-				qk.CallWithResult(&r, "stockmq_test", 1)
-			}
-		}(x)
-	}
-	wg.Wait()
-
-	fmt.Println(float64(c0) / time.Since(t0).Seconds())
 
 	var res map[string]string
 	if err := rpc.CallWithResult(&res, "getParamEx2", "TQBR", "SBER", "LAST"); err != nil {

@@ -5,8 +5,8 @@ import org.zeromq.SocketType
 import org.zeromq.ZContext
 import org.zeromq.ZMQ
 
-class RPCRuntimeError(message: String) : Exception(message)
-class RPCTimeoutError(message: String) : Exception(message)
+class RPCRuntimeException(message: String) : Exception(message)
+class RPCTimeoutException() : Exception()
 
 class RPCClient(uri: String = "tcp://127.0.0.1:8004", private val timeout: Int = 5000) : AutoCloseable {
     private val zmqCtx = ZContext(1)
@@ -16,7 +16,7 @@ class RPCClient(uri: String = "tcp://127.0.0.1:8004", private val timeout: Int =
         connect(uri)
     }
 
-    fun call(method: String, vararg args: Any, timeout: Long = 5000): Any {
+    fun call(method: String, vararg args: Any, timeout: Long = 100): Any {
         zmqSkt.send(MessagePack.pack(listOf(method, *args)))
 
         val poller = zmqCtx.createPoller(1).apply {
@@ -29,10 +29,10 @@ class RPCClient(uri: String = "tcp://127.0.0.1:8004", private val timeout: Int =
             if (status == RPC_OK) {
                 return MessagePack.unpack(result)
             } else {
-                throw RPCRuntimeError(result.toString())
+                throw RPCRuntimeException(MessagePack.unpack(result).toString())
             }
         } else {
-            throw RPCTimeoutError("Timeout error")
+            throw RPCTimeoutException()
         }
     }
 
@@ -52,7 +52,7 @@ class RPCClient(uri: String = "tcp://127.0.0.1:8004", private val timeout: Int =
  */
 fun main() {
     println("StockMQ Kotlin Example")
-    RPCClient("tcp://10.211.55.3:8004").use { rpc ->
+    RPCClient("tcp://127.0.0.1:8004").use { rpc ->
         val res = rpc.call("getParamEx2", "TQBR", "SBER", "LAST")
         println("Result $res")
     }
