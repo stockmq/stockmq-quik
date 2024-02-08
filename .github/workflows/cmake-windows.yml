@@ -70,24 +70,17 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           path: artifacts
-      # - name: Download artifact (stockmq-quik-examples)
-      #   uses: actions/download-artifact@v4
-      #   with:
-      #     name: stockmq-quik-examples
-      - name: Display structure of downloaded files
-        run: ls -R artifacts
-        shell: bash
       - name: Archive Release (stockmq-quik-connector)
         uses: thedoctor0/zip-release@0.7.5
         with:
           type: zip
-          path: stockmq-quik-connector
+          path: artifacts/stockmq-quik-connector
           filename: stockmq-quik-connector.zip
       - name: Archive Release (stockmq-quik-examples)
         uses: thedoctor0/zip-release@0.7.5
         with:
           type: zip
-          path: stockmq-quik-examples
+          path: artifacts/stockmq-quik-examples
           filename: stockmq-quik-examples.zip
       - name: Release
         uses: softprops/action-gh-release@v1
