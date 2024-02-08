@@ -66,13 +66,13 @@ jobs:
         uses: thedoctor0/zip-release@0.7.5
         with:
           type: zip
-          path: artifacts/stockmq-quik-connector
+          directory: artifacts/stockmq-quik-connector
           filename: 'stockmq-quik-connector-${{ github.ref_name }}.zip'
       - name: Archive Release (stockmq-quik-examples)
         uses: thedoctor0/zip-release@0.7.5
         with:
           type: zip
-          path: artifacts/stockmq-quik-examples
+          directory: artifacts/stockmq-quik-examples
           filename: stockmq-quik-examples-${{ github.ref_name }}.zip
       - name: Release
         uses: softprops/action-gh-release@v1
