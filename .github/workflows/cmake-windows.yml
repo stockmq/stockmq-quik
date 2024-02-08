@@ -62,5 +62,4 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/')
         with:
           files: |
-            README.md
             LICENSE
