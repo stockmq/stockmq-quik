@@ -66,16 +66,16 @@ jobs:
           name: stockmq-quik-examples
           path: |
             examples
-      - name: Download artifact (stockmq-quik-connector)
+      - name: Download artifacts
         uses: actions/download-artifact@v4
         with:
-          name: stockmq-quik-connector
-      - name: Download artifact (stockmq-quik-examples)
-        uses: actions/download-artifact@v4
-        with:
-          name: stockmq-quik-examples
+          path: artifacts
+      # - name: Download artifact (stockmq-quik-examples)
+      #   uses: actions/download-artifact@v4
+      #   with:
+      #     name: stockmq-quik-examples
       - name: Display structure of downloaded files
-        run: ls -R
+        run: ls -R artifacts
         shell: bash
       - name: Archive Release (stockmq-quik-connector)
         uses: thedoctor0/zip-release@0.7.5
