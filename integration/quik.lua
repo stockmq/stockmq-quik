@@ -206,5 +206,5 @@ function OnTransReply(msg)
         stockmq_publish("OnTransReply", {ts=StockMQ.time(), msg=msg})
     end
 
-    stockmq_process_trans_reply(reply)
+    stockmq_process_trans_reply(msg)
 end
