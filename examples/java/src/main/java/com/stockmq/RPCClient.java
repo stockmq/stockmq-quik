@@ -49,9 +49,10 @@ public class RPCClient implements AutoCloseable {
             String status = zmqSkt.recvStr();
             byte[] result = zmqSkt.recv();
             if (RPC_OK.equals(status)) {
-                return objectMapper.readValue(result, new TypeReference<T>() {});
+                return objectMapper.readValue(result, new TypeReference<>() {
+                });
             } else {
-                throw new RPCRuntimeException(objectMapper.readValue(result, new TypeReference<String>() {}));
+                throw new RPCRuntimeException(objectMapper.readValue(result, new TypeReference<>() {}));
             }
         } else {
             throw new RPCTimeoutException();

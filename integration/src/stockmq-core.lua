@@ -17,7 +17,7 @@
 
 -- Variables
 local STOCKMQ_FLAKE_ID = 0
-local STOCKMQ_FLAKE_EPOCH = 1640995200
+local STOCKMQ_FLAKE_EPOCH = 1704056400
 local STOCKMQ_FLAKE_SLOTS = 64
 
 -- Initialize flakes
