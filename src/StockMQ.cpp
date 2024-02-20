@@ -21,7 +21,7 @@ constexpr auto STOCKMQ = "StockMQ";
 constexpr auto STATUS_ERROR = "ERROR";
 constexpr auto STATUS_OK = "OK";
 
-// String Utils (C++20 uses RNVO for strings)
+// String Utils (NRVO is enabled in C++20 by default)
 std::string wcs_to_mbs(const std::wstring& wstr, UINT page) {
 	auto count = WideCharToMultiByte(page, 0, wstr.c_str(), static_cast<int>(wstr.length()), NULL, 0, NULL, NULL);
 	auto str = std::string(count, 0);
