@@ -10,7 +10,17 @@ StockMQ is a high-performance RPC library that uses MsgPack and ZeroMQ designed 
 * Compatible with Lua 5.3 and Lua 5.4
 * Provides Pub-Sub support for callback processing
 
-# Python API
+# Clients
+
+Some sample connectors available
+
+* [Go](/examples/golang/)
+* [Java](/examples/java/)
+* [Kotlin](/examples/kotlin/)
+* [NodeJS](/examples/nodejs/)
+* [Python](/examples/python/)
+
+# Python API (High-Level)
 
 ```
 import asyncio
@@ -111,11 +121,15 @@ if __name__ == "__main__":
 
 # Prerequisites
 
+Make sure you have installed the latest Microsoft C/C++ libraries
+
+* [Permalink for latest supported X64/ARM64 version](https://aka.ms/vs/17/release/vc_redist.x64.exe)
+
+# Building
+
 Before you begin building the application, you must have the following prerequisites installed on your system
 
 * [Visual Studio 2022 (C++ Desktop Development)](https://visualstudio.microsoft.com/downloads/)
-
-# Building
 
 ```
 cmake --build --preset ninja-vcpkg-release --config Release
