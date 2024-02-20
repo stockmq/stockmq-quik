@@ -20,11 +20,13 @@ jobs:
       contents: write
 
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout
+        uses: actions/checkout@v3
         with:
           submodules: true
 
-      - uses: lukka/get-cmake@latest
+      - name: Install CMake
+        uses: lukka/get-cmake@latest
 
       - name: Setup vcpkg
         uses: lukka/run-vcpkg@v11
@@ -44,6 +46,7 @@ jobs:
           configurePreset: 'ninja-multi-vcpkg'
           buildPreset: 'ninja-vcpkg-release'
           buildPresetAdditionalArgs: '[`--config Release`]'
+
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
@@ -52,16 +55,19 @@ jobs:
             integration/lib/**/Release/StockMQ.dll
             integration/src/*.lua
             integration/*.lua
+
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
           name: stockmq-quik-examples
           path: |
             examples
+
       - name: Download artifacts
         uses: actions/download-artifact@v4
         with:
           path: artifacts
+
       - name: Archive Release (stockmq-quik-connector)
         uses: thedoctor0/zip-release@0.7.5
         with:
@@ -69,6 +75,7 @@ jobs:
           directory: artifacts
           path: stockmq-quik-connector
           filename: 'stockmq-quik-connector-${{ github.ref_name }}.zip'
+
       - name: Archive Release (stockmq-quik-examples)
         uses: thedoctor0/zip-release@0.7.5
         with:
@@ -76,6 +83,7 @@ jobs:
           directory: artifacts
           path: stockmq-quik-examples
           filename: stockmq-quik-examples-${{ github.ref_name }}.zip
+
       - name: Release
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')
@@ -83,4 +91,3 @@ jobs:
           files: |
             artifacts/stockmq-quik-connector-${{ github.ref_name }}.zip
             artifacts/stockmq-quik-examples-${{ github.ref_name }}.zip
-
