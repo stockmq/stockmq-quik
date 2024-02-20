@@ -128,6 +128,19 @@ Make sure you have installed the [Microsoft C/C++ libraries](https://aka.ms/vs/1
 * Download and extract the latest release of stockmq-quik-connector from [Releases](https://github.com/stockmq/stockmq-quik/releases)
 * Load quik.lua script
 
+# Configuration
+
+The connector opens two sockets (Req-Rep for RPC and Pub-Sub for callback processing with exception of DataSources).
+By default callbacks are disabled because polling is much faster and doesn't require a separate thread or coroutine to handle incoming messages.
+
+```
+STOCKMQ_RPC_TIMEOUT = 10
+STOCKMQ_RPC_URI = "tcp://0.0.0.0:8004"
+
+STOCKMQ_PUB_ENABLED = false
+STOCKMQ_PUB_URI = "tcp://0.0.0.0:8005"
+```
+
 # Building
 
 Before you begin building the application, you must have the following prerequisites installed on your system
