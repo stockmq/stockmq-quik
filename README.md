@@ -20,7 +20,9 @@ Sample connectors available:
 * [NodeJS](/examples/nodejs/)
 * [Python](/examples/python/)
 
-# Python API (High-Level)
+# Python API
+
+High-Level API is available [here](https://github.com/stockmq/stockmq-quik-python).
 
 ```
 import asyncio
@@ -121,9 +123,7 @@ if __name__ == "__main__":
 
 # Installation
 
-Make sure you have installed the Microsoft C/C++ libraries
-
-* [Permalink for latest supported X64/ARM64 version](https://aka.ms/vs/17/release/vc_redist.x64.exe)
+Make sure you have installed the [Microsoft C/C++ libraries](https://aka.ms/vs/17/release/vc_redist.x64.exe)
 
 * Download and extract the latest release of stockmq-quik-connector from [Releases](https://github.com/stockmq/stockmq-quik/releases)
 * Load quik.lua script
