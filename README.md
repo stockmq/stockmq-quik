@@ -130,8 +130,8 @@ Make sure you have installed the [Microsoft C/C++ libraries](https://aka.ms/vs/1
 
 # Configuration
 
-The connector opens two sockets (Req-Rep for RPC and Pub-Sub for callback processing with exception of DataSources).
-By default callbacks are disabled because polling is much faster and doesn't require a separate thread or coroutine to handle incoming messages.
+The connector opens two sockets (Req-Rep for RPC and Pub-Sub for callback processing).
+By default callbacks are disabled (with exception of DataSources) because polling is much faster and doesn't require a separate thread or coroutine to handle incoming messages.
 
 ```
 STOCKMQ_RPC_TIMEOUT = 10
