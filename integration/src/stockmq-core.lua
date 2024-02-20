@@ -17,7 +17,7 @@
 
 -- Variables
 local STOCKMQ_FLAKE_ID = 0
-local STOCKMQ_FLAKE_EPOCH = 1704056400
+local STOCKMQ_FLAKE_EPOCH = 1704067200
 local STOCKMQ_FLAKE_SLOTS = 64
 
 -- Initialize flakes
@@ -35,7 +35,7 @@ function stockmq_last_flake()
 end
 
 -- Get next flake id ((Time - Epoch) * N + x) and throttle (N per second)
--- Epoch starts Jan 01 2022 00:00:00 GMT+0000
+-- Epoch starts Jan 01 2024 00:00:00 GMT+0000
 -- 64 transactions (flakes) per second allowed otherwise zero returned
 function stockmq_next_flake()
     local t = math.floor(os.time() - STOCKMQ_FLAKE_EPOCH)

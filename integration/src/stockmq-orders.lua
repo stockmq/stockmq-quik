@@ -17,10 +17,10 @@
 
 
 -- Create order
-function stockmq_create_order(client, board, ticker, time_in_force, side, price, quantity)
+function stockmq_create_order(account, client, board, ticker, time_in_force, side, price, quantity)
     return stockmq_create_tx({
         ACTION="NEW_ORDER",
-        ACCOUNT=client,
+        ACCOUNT=account,
         CLIENT_CODE=client,
         CLASSCODE=board,
         SECCODE=ticker,
@@ -33,10 +33,10 @@ function stockmq_create_order(client, board, ticker, time_in_force, side, price,
 end
 
 -- Create stop order
-function stockmq_create_simple_stop_order(client, board, ticker, time_in_force, side, price, stop_price, quantity)
+function stockmq_create_simple_stop_order(account, client, board, ticker, time_in_force, side, price, stop_price, quantity)
     return stockmq_create_tx({
         ACTION="NEW_STOP_ORDER",
-        ACCOUNT=client,
+        ACCOUNT=account,
         CLIENT_CODE=client,
         CLASSCODE=board,
         SECCODE=ticker,
@@ -51,10 +51,10 @@ function stockmq_create_simple_stop_order(client, board, ticker, time_in_force, 
 end
 
 -- Cancel order
-function stockmq_cancel_order(client, board, ticker, order_id)
+function stockmq_cancel_order(account, client, board, ticker, order_id)
     return stockmq_create_tx({
         ACTION="KILL_ORDER",
-        ACCOUNT=client,
+        ACCOUNT=account,
         CLIENT_CODE=client,
         CLASSCODE=board,
         SECCODE=ticker,
@@ -63,10 +63,10 @@ function stockmq_cancel_order(client, board, ticker, order_id)
 end
 
 -- Cancel stop order
-function stockmq_cancel_stop_order(client, board, ticker, order_id)
+function stockmq_cancel_stop_order(account, client, board, ticker, order_id)
     return stockmq_create_tx({
         ACTION="KILL_STOP_ORDER",
-        ACCOUNT=client,
+        ACCOUNT=account,
         CLIENT_CODE=client,
         CLASSCODE=board,
         SECCODE=ticker,
