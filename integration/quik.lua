@@ -27,7 +27,7 @@ package.cpath = package.cpath .. ';'
 -- Load C++ extension
 require("StockMQ")
 
--- Global constants
+-- Global constants (ZMQ Socket type)
 STOCKMQ_ZMQ_REP = 4
 STOCKMQ_ZMQ_PUB = 1
 
