@@ -154,3 +154,74 @@ function stockmq_process_trans_reply(reply)
         STOCKMQ_TRANSACTIONS[id] = reply
     end
 end
+
+-- Create order
+function stockmq_create_order(account, client, board, ticker, time_in_force, side, price, quantity)
+    return stockmq_create_tx({
+        ACTION="NEW_ORDER",
+        ACCOUNT=account,
+        CLIENT_CODE=client,
+        CLASSCODE=board,
+        SECCODE=ticker,
+        TYPE="L",
+        EXECUTION_CONDITION=time_in_force,
+        OPERATION=side,
+        PRICE=price,
+        QUANTITY=quantity,
+    })
+end
+
+-- Create stop order
+function stockmq_create_simple_stop_order(account, client, board, ticker, time_in_force, side, price, stop_price, quantity)
+    return stockmq_create_tx({
+        ACTION="NEW_STOP_ORDER",
+        ACCOUNT=account,
+        CLIENT_CODE=client,
+        CLASSCODE=board,
+        SECCODE=ticker,
+        TYPE="L",
+        STOP_ORDER_KIND="SIMPLE_STOP_ORDER",
+        EXECUTION_CONDITION=time_in_force,
+        OPERATION=side,
+        PRICE=price,
+        STOPPRICE=stop_price,
+        QUANTITY=quantity,
+    })
+end
+
+-- Cancel order
+function stockmq_cancel_order(account, client, board, ticker, order_id)
+    return stockmq_create_tx({
+        ACTION="KILL_ORDER",
+        ACCOUNT=account,
+        CLIENT_CODE=client,
+        CLASSCODE=board,
+        SECCODE=ticker,
+        ORDER_KEY=order_id,
+    })
+end
+
+-- Cancel stop order
+function stockmq_cancel_stop_order(account, client, board, ticker, order_id)
+    return stockmq_create_tx({
+        ACTION="KILL_STOP_ORDER",
+        ACCOUNT=account,
+        CLIENT_CODE=client,
+        CLASSCODE=board,
+        SECCODE=ticker,
+        STOP_ORDER_KEY=order_id,
+    })
+end
+
+-- Update order
+function stockmq_update_order(board, id)
+    local order = getOrderByNumber(board, id)
+
+    return {
+        id=id,
+        trans_id=order.trans_id,
+        board=order.class_code,
+        ticker=order.sec_code,
+        flags=order.flags,
+    }
+end

@@ -35,8 +35,6 @@ STOCKMQ_RUN = false
 -- Load StockMQ standard library
 require("stockmq-core")
 require("stockmq-transactions")
-require("stockmq-orders")
-require("stockmq-ds")
 
 -- Main function
 function main()
