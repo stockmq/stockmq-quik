@@ -124,10 +124,3 @@ function stockmq_get_item(t, i)
     end
     return item
 end
-
--- Publish messages if STOCKMQ_PUB is defined
-function stockmq_publish(topic, message)
-    if STOCKMQ_PUB ~= nil then 
-        STOCKMQ_PUB:send(topic, message)
-    end
-end

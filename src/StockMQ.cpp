@@ -148,12 +148,11 @@ void send_multipart(zmq::socket_t* zmq_skt, const std::string& header, const msg
 
 static int stockmq_bind(lua_State* L) {
 	auto bind_address = luaL_checkstring(L, 1);
-	auto skt_type = static_cast<int>(luaL_checkinteger(L, 2));
 	auto udata = (StockMQ**)lua_newuserdata(L, sizeof(StockMQ*));
 	*udata = new StockMQ();
 
 	(*udata)->zmq_ctx = new zmq::context_t(1);
-	(*udata)->zmq_skt = new zmq::socket_t(*(*udata)->zmq_ctx, skt_type);
+	(*udata)->zmq_skt = new zmq::socket_t(*(*udata)->zmq_ctx, ZMQ_REP);
 	(*udata)->zmq_skt->bind(bind_address);
 
 	luaL_getmetatable(L, METATABLE);

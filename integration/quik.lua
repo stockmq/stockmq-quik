@@ -27,19 +27,10 @@ package.cpath = package.cpath .. ';'
 -- Load C++ extension
 require("StockMQ")
 
--- Global constants (ZMQ Socket type)
-STOCKMQ_ZMQ_REP = 4
-STOCKMQ_ZMQ_PUB = 1
-
+-- Global variables
 STOCKMQ_RPC_TIMEOUT = 10
 STOCKMQ_RPC_URI = "tcp://0.0.0.0:8004"
-
-STOCKMQ_PUB_ENABLED = false
-STOCKMQ_PUB_URI = "tcp://0.0.0.0:8005"
-
--- Global variables
 STOCKMQ_RUN = false
-STOCKMQ_PUB = nil
 
 -- Load StockMQ standard library
 require("stockmq-core")
@@ -47,22 +38,10 @@ require("stockmq-transactions")
 require("stockmq-orders")
 require("stockmq-ds")
 
--- Set global variables which is used by main() function
-function OnInit(script_path)
-    STOCKMQ_PUB = StockMQ.bind(STOCKMQ_PUB_URI, STOCKMQ_ZMQ_PUB)
-    STOCKMQ_RUN = true
-end
-
--- Callback called when the script is stopped
-function OnStop(signal)
-    STOCKMQ_RUN = false
-    return STOCKMQ_RPC_TIMEOUT
-end
-
 -- Main function
 function main()
     stockmq_init_flake()
-    local rpc = StockMQ.bind(STOCKMQ_RPC_URI, STOCKMQ_ZMQ_REP)
+    local rpc = StockMQ.bind(STOCKMQ_RPC_URI)
 
     message("StockMQ is listening on "..STOCKMQ_RPC_URI, 1)
 
@@ -73,138 +52,16 @@ function main()
     end
 end
 
-
 -- Callbacks
-function OnFirm(msg)
-    if STOCKMQ_PUB_ENABLED then
-        stockmq_publish("OnFirm", {ts=StockMQ.time(), msg=msg})
-    end
+function OnInit(script_path)
+    STOCKMQ_RUN = true
 end
 
-function OnAllTrade(msg)
-    if STOCKMQ_PUB_ENABLED then
-        stockmq_publish("OnAllTrade", {ts=StockMQ.time(), msg=msg})
-    end
-end
-
-function OnTrade(msg)
-    if STOCKMQ_PUB_ENABLED then
-        stockmq_publish("OnTrade", {ts=StockMQ.time(), msg=msg})
-    end
-end
-
-function OnOrder(msg)
-    if STOCKMQ_PUB_ENABLED then
-        stockmq_publish("OnOrder", {ts=StockMQ.time(), msg=msg})
-    end
-end
-
-function OnAccountBalance(msg)
-    if STOCKMQ_PUB_ENABLED then
-        stockmq_publish("OnAccountBalance", {ts=StockMQ.time(), msg=msg})
-    end
-end
-
-function OnFuturesLimitChange(msg)
-    if STOCKMQ_PUB_ENABLED then
-        stockmq_publish("OnFuturesLimitChange", {ts=StockMQ.time(), msg=msg})
-    end
-end
-
-function OnFuturesLimitDelete(msg)
-    if STOCKMQ_PUB_ENABLED then
-        stockmq_publish("OnFuturesLimitDelete", {ts=StockMQ.time(), msg=msg})
-    end
-end
-
-function OnFuturesClientHolding(msg)
-    if STOCKMQ_PUB_ENABLED then
-        stockmq_publish("OnFuturesClientHolding", {ts=StockMQ.time(), msg=msg})
-    end
-end
-
-function OnMoneyLimit(msg)
-    if STOCKMQ_PUB_ENABLED then
-        stockmq_publish("OnMoneyLimit", {ts=StockMQ.time(), msg=msg})
-    end
-end
-
-function OnMoneyLimitDelete(msg)
-    if STOCKMQ_PUB_ENABLED then
-        stockmq_publish("OnMoneyLimitDelete", {ts=StockMQ.time(), msg=msg})
-    end
-end
-
-function OnDepoLimit(msg)
-    if STOCKMQ_PUB_ENABLED then
-        stockmq_publish("OnDepoLimit", {ts=StockMQ.time(), msg=msg})
-    end
-end
-
-function OnDepoLimitDelete(msg)
-    if STOCKMQ_PUB_ENABLED then
-        stockmq_publish("OnDepoLimitDelete", {ts=StockMQ.time(), msg=msg})
-    end
-end
-
-function OnAccountPosition(msg)
-    if STOCKMQ_PUB_ENABLED then
-        stockmq_publish("OnAccountPosition", {ts=StockMQ.time(), msg=msg})
-    end
-end
-
-function OnNegDeal(msg)
-    if STOCKMQ_PUB_ENABLED then
-        stockmq_publish("OnNegDeal", {ts=StockMQ.time(), msg=msg})
-    end
-end
-
-function OnNegTrade(msg)
-    if STOCKMQ_PUB_ENABLED then
-        stockmq_publish("OnNegTrade", {ts=StockMQ.time(), msg=msg})
-    end
-end
-
-function OnStopOrder(msg)
-    if STOCKMQ_PUB_ENABLED then
-        stockmq_publish("OnStopOrder", {ts=StockMQ.time(), msg=msg})
-    end
-end
-
-function OnParam(msg1, msg2)
-    if STOCKMQ_PUB_ENABLED then
-        stockmq_publish("OnParam", {ts=StockMQ.time(), msg={class_code=msg1, sec_code=msg2}})
-    end
-end
-
-function OnQuote(msg1, msg2)
-    if STOCKMQ_PUB_ENABLED then
-        stockmq_publish("OnQuote", {ts=StockMQ.time(), msg={class_code=msg1, sec_code=msg2}})
-    end
-end
-
-function OnDisconnected()
-    if STOCKMQ_PUB_ENABLED then
-        stockmq_publish("OnDisconnected", {ts=StockMQ.time(), msg=nil})
-    end
-end
-
-function OnConnected(msg)
-    if STOCKMQ_PUB_ENABLED then
-        stockmq_publish("OnConnected", {ts=StockMQ.time(), msg=msg})
-    end
-end
-
-function OnCleanUp()
-    if STOCKMQ_PUB_ENABLED then
-        stockmq_publish("OnCleanUp", {ts=StockMQ.time(), msg=nil})
-    end
+function OnStop(signal)
+    STOCKMQ_RUN = false
+    return STOCKMQ_RPC_TIMEOUT
 end
 
 function OnTransReply(msg)
-    if STOCKMQ_PUB_ENABLED then
-        stockmq_publish("OnTransReply", {ts=StockMQ.time(), msg=msg})
-    end
-
     stockmq_process_trans_reply(msg)
 end

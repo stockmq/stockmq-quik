@@ -38,8 +38,8 @@ local STOCKMQ_DS_INTERVALS = {
 }
 
 -- Create new datasource
-function stockmq_ds_create(ds_name, board, ticker, interval, stream)
-    local name = table.concat({stream and "S" or "D", ds_name, board, ticker, interval}, ":")
+function stockmq_ds_create(ds_name, board, ticker, interval)
+    local name = table.concat({ds_name, board, ticker, interval}, ":")
 
     if STOCKMQ_DS[name] ~= nil then
         return name
@@ -50,11 +50,7 @@ function stockmq_ds_create(ds_name, board, ticker, interval, stream)
         error(err)
     end
 
-    if stream then
-        ds:SetUpdateCallback(stockmq_ds_callback(name))
-    else
-        ds:SetEmptyCallback()
-    end
+    ds:SetEmptyCallback()
 
     STOCKMQ_DS[name] = ds
     return name
@@ -85,12 +81,5 @@ function stockmq_ds_peek(name, index)
             V = ds:V(ix),
             T = os.time(ds:T(ix)),
         }
-    end
-end
-
--- Callback clojure for the datasource
-function stockmq_ds_callback(name)
-    return function(index)
-        stockmq_publish(name, {ts=stockmq_time(), msg=stockmq_ds_peek(name, index-1)})
     end
 end
