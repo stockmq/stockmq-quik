@@ -38,7 +38,8 @@ require("stockmq-transactions")
 
 -- Main function
 function main()
-    stockmq_init_flake()
+    sleep(1000)
+
     local rpc = StockMQ.bind(STOCKMQ_RPC_URI)
 
     message("StockMQ is listening on "..STOCKMQ_RPC_URI, 1)
