@@ -154,7 +154,7 @@ function stockmq_ds_create(ds_name, board, ticker, interval)
         return name
     end
 
-    if STOCKMQ_DS_INTERVALS[interval] =~ nil then
+    if STOCKMQ_DS_INTERVALS[interval] ~= nil then
         error("Invalid interval "..interval)
     end
 
