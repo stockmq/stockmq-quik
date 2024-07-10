@@ -21,7 +21,8 @@ Connectors available:
 
 
 For example,
-```
+
+```go
 func main() {
 	fmt.Println("StockMQ Go Example")
 	rpc, err := NewRPCClient(context.Background(), "tcp://127.0.0.1:8004")
@@ -39,7 +40,8 @@ func main() {
 ```
 
 Python version:
-```
+
+```python
 if __name__ == "__main__":
     with RPCClient("tcp://127.0.0.1:8004") as rpc:
         res = rpc.call("getParamEx2", "TQBR", "SBER", "LAST")
