@@ -14,14 +14,14 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-#include "StockMQ.h"
+#include "stockmq.h"
 
-constexpr auto METATABLE = "luaL_StockMQ";
-constexpr auto STOCKMQ = "StockMQ";
+constexpr auto METATABLE = "luaL_stockmq";
+constexpr auto STOCKMQ = "stockmq";
 constexpr auto STATUS_ERROR = "ERROR";
 constexpr auto STATUS_OK = "OK";
 
-// String Utils (NRVO is enabled in C++20 by default)
+// String Utils
 std::string wcs_to_mbs(const std::wstring& wstr, UINT page) {
 	auto count = WideCharToMultiByte(page, 0, wstr.c_str(), static_cast<int>(wstr.length()), NULL, 0, NULL, NULL);
 	auto str = std::string(count, 0);
@@ -296,7 +296,7 @@ static luaL_Reg funcs[] = {
 	{ NULL, NULL }
 };
 
-extern "C" LUALIB_API int luaopen_StockMQ(lua_State * L) {
+extern "C" LUALIB_API int luaopen_stockmq(lua_State * L) {
 	luaL_checkversion(L);
 	luaL_newmetatable(L, METATABLE);
 	luaL_setfuncs(L, funcs, 0);

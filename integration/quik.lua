@@ -25,7 +25,7 @@ package.cpath = package.cpath .. ';'
     .. _VERSION:gsub("Lua (%d).(%d)", "lua%1%2").. "\\Release\\?.dll"
 
 -- Load C++ extension and core library
-require("StockMQ")
+require("stockmq")
 require("stockmq-core")
 
 -- Global variables
@@ -35,12 +35,12 @@ STOCKMQ_RPC_URI = "tcp://127.0.0.1:8004"
 
 -- Main function
 function main()
-    local rpc = StockMQ.bind(STOCKMQ_RPC_URI)
-    message("StockMQ is listening on "..STOCKMQ_RPC_URI, 1)
+    local rpc = stockmq.bind(STOCKMQ_RPC_URI)
+    message("stockmq is listening on "..STOCKMQ_RPC_URI, 1)
 
     while STOCKMQ_RUN do
         if rpc:process() ~= 0 then
-            message("StockMQ Error: code " .. tostring(rpc:errno()), 1)
+            message("stockmq error: code " .. tostring(rpc:errno()), 1)
         end
     end
 end

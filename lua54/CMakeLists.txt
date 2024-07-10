@@ -39,17 +39,17 @@ add_library (lua54 SHARED ${LUA_SOURCES})
 target_compile_definitions(lua54 PRIVATE LUA_BUILD_AS_DLL)
 
 set(LIB_SOURCES
-  ../src/StockMQ.cpp
-  ../src/StockMQ.h
+  ../src/stockmq.cpp
+  ../src/stockmq.h
 )
 
-add_library (StockMQ54 SHARED ${LIB_SOURCES})
-set_target_properties(StockMQ54 PROPERTIES OUTPUT_NAME "StockMQ")
-target_include_directories(StockMQ54 PRIVATE src)
-target_link_libraries(StockMQ54 PRIVATE lua54)
-target_link_libraries(StockMQ54 PRIVATE cppzmq cppzmq-static)
-target_link_libraries(StockMQ54 PRIVATE msgpack-cxx)
+add_library (stockmq54 SHARED ${LIB_SOURCES})
+set_target_properties(stockmq54 PROPERTIES OUTPUT_NAME "stockmq")
+target_include_directories(stockmq54 PRIVATE src)
+target_link_libraries(stockmq54 PRIVATE lua54)
+target_link_libraries(stockmq54 PRIVATE cppzmq cppzmq-static)
+target_link_libraries(stockmq54 PRIVATE msgpack-cxx)
 
-set_property(TARGET StockMQ54 PROPERTY CXX_STANDARD 20)
-set_property(TARGET StockMQ54 PROPERTY MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+set_property(TARGET stockmq54 PROPERTY CXX_STANDARD 20)
+set_property(TARGET stockmq54 PROPERTY MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 
