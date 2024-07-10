@@ -26,6 +26,13 @@ Connectors available:
 * [NodeJS](/examples/nodejs/)
 * [Python](/examples/python/)
 
+Python version:
+
+```python
+with RPCClient("tcp://127.0.0.1:8004") as rpc:
+	res = rpc.call("getParamEx2", "TQBR", "SBER", "LAST")
+	print(f"Result {res}")
+```
 
 Go version:
 
@@ -44,17 +51,6 @@ func main() {
 	}
 	fmt.Printf("Result %v\n", res)
 }
-```
-
-Python version:
-
-```python
-if __name__ == "__main__":
-    with RPCClient("tcp://127.0.0.1:8004") as rpc:
-        res = rpc.call("getParamEx2", "TQBR", "SBER", "LAST")
-
-    print("StockMQ Python Example")
-    print(f"Result {res}")
 ```
 
 # Installation
