@@ -2,8 +2,6 @@
 
 StockMQ is a high-performance RPC library that uses MsgPack and ZeroMQ designed to use with QUIK (ARQA Technologies) trading terminal.
 
-RPC uses Req-Rep pattern. Each request and response serialized with msgpack.
-
 ```
 Request  -> msgpack([method, args...])
 Response -> status, msgpack(payload)
@@ -26,7 +24,7 @@ Connectors available:
 * [NodeJS](/examples/nodejs/)
 * [Python](/examples/python/)
 
-Python version:
+Python:
 
 ```python
 with RPCClient("tcp://127.0.0.1:8004") as rpc:
@@ -34,7 +32,7 @@ with RPCClient("tcp://127.0.0.1:8004") as rpc:
     print(f"Result {res}")
 ```
 
-Go version:
+Go:
 
 ```go
 rpc, err := NewRPCClient(context.Background(), "tcp://127.0.0.1:8004")
