@@ -27,7 +27,7 @@ end
 
 --- Return current UNIX time
 function stockmq_time()
-    return StockMQ.time()
+    return stockmq.time()
 end
 
 -- Convert datetime (with ms, mcs to unix timestamp)
