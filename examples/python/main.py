@@ -3,7 +3,7 @@ import zmq
 import msgpack
 
 from typing import Any
-
+from typing import Optional
 
 class RPCRuntimeError(Exception):
     pass
@@ -30,7 +30,7 @@ class RPCClient:
     def __exit__(self, *args: Any, **kwargs: Any):
         self.close()
 
-    def call(self, method: str, *args: Any, timeout: None | int = None) -> Any:
+    def call(self, method: str, *args: Any, timeout: Optional[int] = None) -> Any:
         self.zmq_skt.send(msgpack.packb([method, *args]))
         if self.zmq_skt.poll(timeout or self.timeout) == zmq.POLLIN:
             s1, s2 = self.zmq_skt.recv_multipart()

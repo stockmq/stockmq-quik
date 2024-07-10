@@ -14,14 +14,14 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-#include "StockMQ.h"
+#include "stockmq.h"
 
-constexpr auto METATABLE = "luaL_StockMQ";
-constexpr auto STOCKMQ = "StockMQ";
+constexpr auto METATABLE = "luaL_stockmq";
+constexpr auto STOCKMQ = "stockmq";
 constexpr auto STATUS_ERROR = "ERROR";
 constexpr auto STATUS_OK = "OK";
 
-// String Utils (NRVO is enabled in C++20 by default)
+// String Utils
 std::string wcs_to_mbs(const std::wstring& wstr, UINT page) {
 	auto count = WideCharToMultiByte(page, 0, wstr.c_str(), static_cast<int>(wstr.length()), NULL, 0, NULL, NULL);
 	auto str = std::string(count, 0);
@@ -148,12 +148,11 @@ void send_multipart(zmq::socket_t* zmq_skt, const std::string& header, const msg
 
 static int stockmq_bind(lua_State* L) {
 	auto bind_address = luaL_checkstring(L, 1);
-	auto skt_type = static_cast<int>(luaL_checkinteger(L, 2));
 	auto udata = (StockMQ**)lua_newuserdata(L, sizeof(StockMQ*));
 	*udata = new StockMQ();
 
 	(*udata)->zmq_ctx = new zmq::context_t(1);
-	(*udata)->zmq_skt = new zmq::socket_t(*(*udata)->zmq_ctx, skt_type);
+	(*udata)->zmq_skt = new zmq::socket_t(*(*udata)->zmq_ctx, ZMQ_REP);
 	(*udata)->zmq_skt->bind(bind_address);
 
 	luaL_getmetatable(L, METATABLE);
@@ -297,7 +296,7 @@ static luaL_Reg funcs[] = {
 	{ NULL, NULL }
 };
 
-extern "C" LUALIB_API int luaopen_StockMQ(lua_State * L) {
+extern "C" LUALIB_API int luaopen_stockmq(lua_State * L) {
 	luaL_checkversion(L);
 	luaL_newmetatable(L, METATABLE);
 	luaL_setfuncs(L, funcs, 0);
