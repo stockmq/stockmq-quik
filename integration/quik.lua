@@ -24,24 +24,18 @@ package.cpath = package.cpath .. ';'
     .. getScriptPath() .. "\\lib\\"
     .. _VERSION:gsub("Lua (%d).(%d)", "lua%1%2").. "\\Release\\?.dll"
 
--- Load C++ extension
+-- Load C++ extension and core library
 require("StockMQ")
+require("stockmq-core")
 
 -- Global variables
-STOCKMQ_RPC_TIMEOUT = 10
-STOCKMQ_RPC_URI = "tcp://0.0.0.0:8004"
 STOCKMQ_RUN = false
-
--- Load StockMQ standard library
-require("stockmq-core")
-require("stockmq-transactions")
+STOCKMQ_RPC_TIMEOUT = 10
+STOCKMQ_RPC_URI = "tcp://127.0.0.1:8004"
 
 -- Main function
 function main()
-    sleep(1000)
-
     local rpc = StockMQ.bind(STOCKMQ_RPC_URI)
-
     message("StockMQ is listening on "..STOCKMQ_RPC_URI, 1)
 
     while STOCKMQ_RUN do
@@ -59,8 +53,4 @@ end
 function OnStop(signal)
     STOCKMQ_RUN = false
     return STOCKMQ_RPC_TIMEOUT
-end
-
-function OnTransReply(msg)
-    stockmq_process_trans_reply(msg)
 end
