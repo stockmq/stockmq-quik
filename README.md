@@ -37,20 +37,17 @@ with RPCClient("tcp://127.0.0.1:8004") as rpc:
 Go version:
 
 ```go
-func main() {
-	fmt.Println("StockMQ Go Example")
-	rpc, err := NewRPCClient(context.Background(), "tcp://127.0.0.1:8004")
-	if err != nil {
-		log.Fatalln(err)
-	}
-	defer rpc.Close()
-
-	var res map[string]string
-	if err := rpc.CallWithResult(&res, "getParamEx2", "TQBR", "SBER", "LAST"); err != nil {
-		log.Fatalln(err)
-	}
-	fmt.Printf("Result %v\n", res)
+rpc, err := NewRPCClient(context.Background(), "tcp://127.0.0.1:8004")
+if err != nil {
+	log.Fatalln(err)
 }
+defer rpc.Close()
+
+var res map[string]string
+if err := rpc.CallWithResult(&res, "getParamEx2", "TQBR", "SBER", "LAST"); err != nil {
+	log.Fatalln(err)
+}
+fmt.Printf("Result %v\n", res)
 ```
 
 # Installation
