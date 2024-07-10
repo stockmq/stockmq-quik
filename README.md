@@ -20,7 +20,7 @@ Connectors available:
 * [Python](/examples/python/)
 
 
-For example,
+Go version:
 
 ```go
 func main() {
@@ -54,9 +54,8 @@ if __name__ == "__main__":
 
 RPC uses Req-Rep pattern. Each request and response serialized with msgpack.
 
-Request: msgpack([method, args...])
-
-Response: status, msgpack(payload)
+Request  -> msgpack([method, args...])
+Response -> status, msgpack(payload)
 
 Here is an example of the Python connector.
 
