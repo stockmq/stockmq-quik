@@ -66,7 +66,7 @@ Make sure you have installed the [Microsoft C/C++ libraries](https://aka.ms/vs/1
 
 # Configuration
 
-The connector opens a socket on loopback interface. You can bind it to the physical address by changing the value: 
+The connector opens a socket on loopback interface. You can bind it to the physical address by changing the *STOCKMQ_RPC_URI* variable: 
 
 ```
 STOCKMQ_RPC_TIMEOUT = 10
