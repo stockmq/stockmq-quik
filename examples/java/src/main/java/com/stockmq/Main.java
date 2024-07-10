@@ -13,13 +13,13 @@ import java.util.Arrays;
 import java.util.Map;
 import java.util.stream.Stream;
 
-class RPCRuntimeException extends RuntimeException {
+class RPCRuntimeException extends Exception {
     public RPCRuntimeException(String message) {
         super(message);
     }
 }
 
-class RPCTimeoutException extends RuntimeException {
+class RPCTimeoutException extends Exception {
     public RPCTimeoutException() {
         super();
     }
@@ -40,7 +40,7 @@ class RPCClient implements AutoCloseable {
         zmqSkt.connect(uri);
     }
 
-    public <T> T call(String method, Object... args) throws IOException {
+    public <T> T call(String method, Object... args) throws Exception {
         ObjectMapper objectMapper = new ObjectMapper(new MessagePackFactory());
 
         zmqSkt.send(objectMapper.writeValueAsBytes(Stream.concat(Stream.of(method), Arrays.stream(args)).toList()));
@@ -73,7 +73,7 @@ public class Main {
         try (RPCClient rpc = new RPCClient("tcp://127.0.0.1:8004", 1000)) {
             Map<String, String> res = rpc.call("getParamEx2", "TQBR", "SBER", "LAST");
             System.out.println("Result " + res);
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
