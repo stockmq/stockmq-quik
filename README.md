@@ -30,8 +30,8 @@ Python version:
 
 ```python
 with RPCClient("tcp://127.0.0.1:8004") as rpc:
-	res = rpc.call("getParamEx2", "TQBR", "SBER", "LAST")
-	print(f"Result {res}")
+    res = rpc.call("getParamEx2", "TQBR", "SBER", "LAST")
+    print(f"Result {res}")
 ```
 
 Go version:
@@ -39,13 +39,13 @@ Go version:
 ```go
 rpc, err := NewRPCClient(context.Background(), "tcp://127.0.0.1:8004")
 if err != nil {
-	log.Fatalln(err)
+    log.Fatalln(err)
 }
 defer rpc.Close()
 
 var res map[string]string
 if err := rpc.CallWithResult(&res, "getParamEx2", "TQBR", "SBER", "LAST"); err != nil {
-	log.Fatalln(err)
+    log.Fatalln(err)
 }
 fmt.Printf("Result %v\n", res)
 ```
