@@ -36,11 +36,11 @@ STOCKMQ_RPC_URI = "tcp://127.0.0.1:8004"
 -- Main function
 function main()
     local rpc = stockmq.bind(STOCKMQ_RPC_URI)
-    message("stockmq is listening on "..STOCKMQ_RPC_URI, 1)
+    message("StockMQ is listening on "..STOCKMQ_RPC_URI, 1)
 
     while STOCKMQ_RUN do
         if rpc:process() ~= 0 then
-            message("stockmq error: code " .. tostring(rpc:errno()), 1)
+            message("StockMQ error: code " .. tostring(rpc:errno()), 1)
         end
     end
 end
