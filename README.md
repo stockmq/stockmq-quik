@@ -2,8 +2,6 @@
 
 StockMQ is a high-performance RPC library that uses MsgPack and ZeroMQ designed to use with QUIK (ARQA Technologies) trading terminal.
 
-RPC uses Req-Rep pattern. Each request and response serialized with msgpack.
-
 ```
 Request  -> msgpack([method, args...])
 Response -> status, msgpack(payload)
@@ -26,35 +24,28 @@ Connectors available:
 * [NodeJS](/examples/nodejs/)
 * [Python](/examples/python/)
 
-
-Go version:
-
-```go
-func main() {
-	fmt.Println("StockMQ Go Example")
-	rpc, err := NewRPCClient(context.Background(), "tcp://127.0.0.1:8004")
-	if err != nil {
-		log.Fatalln(err)
-	}
-	defer rpc.Close()
-
-	var res map[string]string
-	if err := rpc.CallWithResult(&res, "getParamEx2", "TQBR", "SBER", "LAST"); err != nil {
-		log.Fatalln(err)
-	}
-	fmt.Printf("Result %v\n", res)
-}
-```
-
-Python version:
+Python:
 
 ```python
-if __name__ == "__main__":
-    with RPCClient("tcp://127.0.0.1:8004") as rpc:
-        res = rpc.call("getParamEx2", "TQBR", "SBER", "LAST")
-
-    print("StockMQ Python Example")
+with RPCClient("tcp://127.0.0.1:8004") as rpc:
+    res = rpc.call("getParamEx2", "TQBR", "SBER", "LAST")
     print(f"Result {res}")
+```
+
+Go:
+
+```go
+rpc, err := NewRPCClient(context.Background(), "tcp://127.0.0.1:8004")
+if err != nil {
+    log.Fatalln(err)
+}
+defer rpc.Close()
+
+var res map[string]string
+if err := rpc.CallWithResult(&res, "getParamEx2", "TQBR", "SBER", "LAST"); err != nil {
+    log.Fatalln(err)
+}
+fmt.Printf("Result %v\n", res)
 ```
 
 # Installation
