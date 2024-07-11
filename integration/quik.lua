@@ -27,6 +27,7 @@ package.cpath = package.cpath .. ';'
 -- Load C++ extension and core library
 require("stockmq")
 require("stockmq-core")
+require("stockmq-user")
 
 -- Global variables
 STOCKMQ_RUN = false
