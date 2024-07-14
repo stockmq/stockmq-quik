@@ -49,8 +49,7 @@ class RPCClient:
 
 
 if __name__ == "__main__":
+    print("StockMQ Python Example")
     with RPCClient("tcp://127.0.0.1:8004") as rpc:
         res = rpc.call("getParamEx2", "TQBR", "SBER", "LAST")
-
-    print("StockMQ Python Example")
-    print(f"Result {res}")
+        print(f"Result {res}")

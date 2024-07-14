@@ -40,12 +40,12 @@ class RPCClient {
 }
 
 async function run() {
+    console.log('StockMQ NodeJS Example');
+
     const rpc = new RPCClient('tcp://127.0.0.1:8004');
     const res = await rpc.call('getParamEx2', 'TQBR', 'SBER', 'LAST');
-
-    console.log('StockMQ NodeJS Example');
+    
     console.log(`Result ${JSON.stringify(res)}`);
-
     rpc.close()
 }
 
