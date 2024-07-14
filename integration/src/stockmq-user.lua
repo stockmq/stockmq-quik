@@ -11,7 +11,7 @@ local STOCKMQ_EXECUTED = "EXECUTED"
 -- Send transaction
 function stockmq_create_tx(tx)
     local rx = {
-        id=stockmq_next_flake(),
+        id=tx.TRANS_ID or stockmq_next_flake(),
         action=tx.ACTION,
         board=tx.CLASSCODE,
         order_id=0,
