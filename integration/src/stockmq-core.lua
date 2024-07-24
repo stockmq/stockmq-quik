@@ -16,9 +16,6 @@
 ]]
 
 -- Variables
-local STOCKMQ_FLAKE_ID = 0
-local STOCKMQ_FLAKE_SLOTS = 64
-
 local STOCKMQ_DS = {}
 local STOCKMQ_DS_INTERVALS = {
     TICK = INTERVAL_TICK,
@@ -53,36 +50,6 @@ end
 --- Return current UNIX time
 function stockmq_time()
     return stockmq.time()
-end
-
--- Get last flake id
-function stockmq_last_flake()
-    return STOCKMQ_FLAKE_ID
-end
-
--- Get next flake id ((Time - Epoch) * N + x) and throttle (N per second)
--- Epoch starts Jan 01 YEAR 00:00:00 GMT+0000
--- 64 transactions (flakes) per second allowed otherwise zero returned
-function stockmq_next_flake()
-    local e = os.time({year=os.date("%Y"), month=1, day=1, hour=0, min=0, sec=0})
-    local t = math.floor(os.time() - e)
-    local l = stockmq_last_flake()
-    local n = 0
-
-    if t == l // STOCKMQ_FLAKE_SLOTS then
-        n = l % STOCKMQ_FLAKE_SLOTS + 1
-        if n >= STOCKMQ_FLAKE_SLOTS then
-            return 0
-        end
-    end
-
-    t = t * STOCKMQ_FLAKE_SLOTS + n
-    if t > 0x7FFFFFFF then
-        error("Integer overflow")
-    end
-
-    STOCKMQ_FLAKE_ID = t
-    return STOCKMQ_FLAKE_ID
 end
 
 -- Convert datetime (with ms, mcs to unix timestamp)
