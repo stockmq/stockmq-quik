@@ -104,9 +104,16 @@ function stockmq_get_item(t, i)
     return item
 end
 
+-- Publish messages if STOCKMQ_PUB is defined
+function stockmq_publish(topic, message)
+    if STOCKMQ_PUB ~= nil then 
+        STOCKMQ_PUB:send(topic, message)
+    end
+end
+
 -- Create new datasource
-function stockmq_ds_create(board, ticker, interval)
-    local name = table.concat({board, ticker, interval}, ":")
+function stockmq_ds_create(board, ticker, interval, stream)
+    local name = table.concat({stream and "S" or "D", board, ticker, interval}, ":")
 
     if STOCKMQ_DS[name] ~= nil then
         return name
@@ -121,10 +128,21 @@ function stockmq_ds_create(board, ticker, interval)
         error(err)
     end
 
-    ds:SetEmptyCallback()
+    if stream then
+        ds:SetUpdateCallback(stockmq_ds_callback(name))
+    else
+        ds:SetEmptyCallback()
+    end
 
     STOCKMQ_DS[name] = ds
     return name
+end
+
+-- Callback clojure for the datasource
+function stockmq_ds_callback(name)
+    return function(index)
+        stockmq_publish(name, {ts=stockmq_time(), msg=stockmq_ds_peek(name, index-1)})
+    end
 end
 
 -- Delete datasource
@@ -154,5 +172,4 @@ function stockmq_ds_peek(name, index)
         }
     end
 end
-
 

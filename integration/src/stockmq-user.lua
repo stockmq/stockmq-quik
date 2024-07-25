@@ -185,7 +185,6 @@ function stockmq_update_order(board, id)
     }
 end
 
-
-function OnTransReply(reply)
+function OnTransReply(msg)
     stockmq_process_trans_reply(reply)
 end
