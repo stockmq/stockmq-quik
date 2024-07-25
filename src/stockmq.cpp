@@ -22,30 +22,22 @@ constexpr auto STATUS_ERROR = "ERROR";
 constexpr auto STATUS_OK = "OK";
 
 // String Utils
-std::string wcs_to_mbs(const std::wstring& wstr, UINT page) {
+static std::string wcs_to_mbs(const std::wstring& wstr, UINT page) {
 	auto count = WideCharToMultiByte(page, 0, wstr.c_str(), static_cast<int>(wstr.length()), NULL, 0, NULL, NULL);
 	auto str = std::string(count, 0);
 	WideCharToMultiByte(page, 0, wstr.c_str(), -1, &str[0], count, NULL, NULL);
 	return str;
 }
 
-std::wstring mbs_to_wcs(const std::string& str, UINT page) {
+static std::wstring mbs_to_wcs(const std::string& str, UINT page) {
 	auto count = MultiByteToWideChar(page, 0, str.c_str(), static_cast<int>(str.length()), NULL, 0);
 	auto wstr = std::wstring(count, 0);
 	MultiByteToWideChar(page, 0, str.c_str(), static_cast<int>(str.length()), &wstr[0], count);
 	return wstr;
 }
 
-std::string utf8_to_ansi(const std::string& str) {
-	return wcs_to_mbs(mbs_to_wcs(str, CP_UTF8), CP_ACP);
-}
-
-std::string ansi_to_utf8(const std::string& str) {
-	return wcs_to_mbs(mbs_to_wcs(str, CP_ACP), CP_UTF8);
-}
-
 // Stack Utils
-int stack_table_count(lua_State* L, int t) {
+static int stack_table_count(lua_State* L, int t) {
 	lua_pushnil(L);
 	auto count = 0;
 	while (lua_next(L, t) != 0) {
@@ -55,10 +47,10 @@ int stack_table_count(lua_State* L, int t) {
 	return count;
 }
 
-void stack_push(lua_State* L, msgpack::object& obj) {
+static void stack_push(lua_State* L, msgpack::object& obj) {
 	switch (obj.type) {
 	case msgpack::type::STR:
-		lua_pushstring(L, utf8_to_ansi(obj.as<std::string>()).c_str());
+		lua_pushstring(L, wcs_to_mbs(mbs_to_wcs(obj.as<std::string>(), CP_UTF8), CP_ACP).c_str());
 		break;
 	case msgpack::type::BOOLEAN:
 		lua_pushboolean(L, obj.via.boolean);
@@ -113,7 +105,7 @@ void stack_pack(msgpack::packer<msgpack::sbuffer>& pk, lua_State* L, int i) {
 		}
 		break;
 	case LUA_TSTRING:
-		pk.pack(ansi_to_utf8(lua_tostring(L, i)));
+		pk.pack(wcs_to_mbs(mbs_to_wcs(lua_tostring(L, i), CP_ACP), CP_UTF8));
 		break;
 	case LUA_TTABLE:
 		pk.pack_map(stack_table_count(L, i));
@@ -137,11 +129,11 @@ struct StockMQ {
 	int zmq_err;
 };
 
-StockMQ* stockmq_check(lua_State* L, int n) {
+static StockMQ* stockmq_check(lua_State* L, int n) {
 	return *(StockMQ**)luaL_checkudata(L, n, METATABLE);
 }
 
-void send_multipart(zmq::socket_t* zmq_skt, const std::string& header, const msgpack::sbuffer& buffer) {
+static void send_multipart(zmq::socket_t* zmq_skt, const std::string& header, const msgpack::sbuffer& buffer) {
 	zmq_skt->send(zmq::message_t(header.data(), header.size()), zmq::send_flags::sndmore);
 	zmq_skt->send(zmq::message_t(buffer.data(), buffer.size()), zmq::send_flags::none);
 }
@@ -158,6 +150,28 @@ static int stockmq_bind(lua_State* L) {
 	luaL_getmetatable(L, METATABLE);
 	lua_setmetatable(L, -2);
 	return 1;
+}
+
+static int stockmq_bind(lua_State* L, int skt_type) {
+	auto bind_address = luaL_checkstring(L, 1);
+	auto udata = (StockMQ**)lua_newuserdata(L, sizeof(StockMQ*));
+	*udata = new StockMQ();
+
+	(*udata)->zmq_ctx = new zmq::context_t(1);
+	(*udata)->zmq_skt = new zmq::socket_t(*(*udata)->zmq_ctx, skt_type);
+	(*udata)->zmq_skt->bind(bind_address);
+
+	luaL_getmetatable(L, METATABLE);
+	lua_setmetatable(L, -2);
+	return 1;
+}
+
+static int stockmq_rpc(lua_State* L) {
+	return stockmq_bind(L, ZMQ_REP);
+}
+
+static int stockmq_pub(lua_State* L) {
+	return stockmq_bind(L, ZMQ_PUB);
 }
 
 static int stockmq_process(lua_State* L) {
@@ -287,7 +301,8 @@ static int stockmq_destructor(lua_State* L) {
 }
 
 static luaL_Reg funcs[] = {
-	{ "bind", stockmq_bind },
+	{ "rpc", stockmq_rpc },
+	{ "pub", stockmq_pub },
 	{ "send", stockmq_send },
 	{ "process", stockmq_process },
 	{ "errno", stockmq_errno },

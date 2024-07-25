@@ -32,12 +32,16 @@ require("stockmq-user")
 -- Global variables
 STOCKMQ_RUN = false
 STOCKMQ_RPC_TIMEOUT = 10
+
 STOCKMQ_RPC_URI = "tcp://127.0.0.1:8004"
+STOCKMQ_PUB_URI = "tcp://127.0.0.1:8005"
 
 -- Main function
 function main()
-    local rpc = stockmq.bind(STOCKMQ_RPC_URI)
-    message("StockMQ is listening on "..STOCKMQ_RPC_URI, 1)
+    local rpc = stockmq.rpc(STOCKMQ_RPC_URI)
+    message("StockMQ is listening on" 
+        .. "\nRPC: " .. STOCKMQ_RPC_URI
+        .. "\nPUB: " .. STOCKMQ_PUB_URI, 1)
 
     while STOCKMQ_RUN do
         if rpc:process() ~= 0 then
@@ -48,6 +52,7 @@ end
 
 -- Callbacks
 function OnInit(script_path)
+    STOCKMQ_PUB = stockmq.pub(STOCKMQ_PUB_URI)
     STOCKMQ_RUN = true
 end
 
